@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 using OpenCvSharp;
 
@@ -70,8 +69,11 @@ namespace Dreamland.Core.Vision.Match
                 {
                     Value = maxValue
                 };
-                matchItem.Point.Offset(topLeft.X + searchMat.Width / 2, topLeft.Y + searchMat.Height / 2);
-                matchItem.Rectangle = new Rectangle(topLeft.X, topLeft.Y, searchMat.Width, searchMat.Height);
+
+                var centerX = topLeft.X + (double) searchMat.Width / 2;
+                var centerY = topLeft.Y + (double) searchMat.Height / 2;
+                matchItem.Point = new System.Drawing.Point((int) centerX, (int) centerY);
+                matchItem.Rectangle = new System.Drawing.Rectangle(topLeft.X, topLeft.Y, searchMat.Width, searchMat.Height);
                 matchResult.MatchItems.Add(matchItem);
 
                 //屏蔽已筛选区域
