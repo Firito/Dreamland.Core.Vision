@@ -14,11 +14,17 @@ namespace Dreamland.Core.Vision.Match
         /// </summary>
         /// <param name="sourceMat">原始图片</param>
         /// <param name="searchMat">需要查找的图片</param>
-        /// <param name="threshold"> 阈值，当相识度小于该阈值的时候，就忽略掉</param>
+        /// <param name="threshold"> 相似度匹配的阈值
+        ///     <para>
+        ///         在<see cref="TemplateMatchModes.SqDiff"/>和<see cref="TemplateMatchModes.SqDiffNormed"/>模式下，当相识度大于该阈值的时候，就忽略掉；
+        ///         在其他<see cref="TemplateMatchModes"/>模式下，当相识度小于该阈值的时候，就忽略掉；
+        ///     </para>
+        /// </param>
         /// <param name="maxCount">最大的匹配数</param>
         /// <param name="matchModes">匹配算法</param>
         /// <returns></returns>
-        internal static MatchResult Match(Mat sourceMat, Mat searchMat, double threshold, uint maxCount, TemplateMatchModes matchModes)
+        internal static MatchResult Match(Mat sourceMat, Mat searchMat, double threshold, uint maxCount,
+            TemplateMatchModes matchModes)
         {
             using var resultMat = new Mat();
             resultMat.Create(sourceMat.Cols - searchMat.Cols + 1, sourceMat.Rows - searchMat.Cols + 1,
@@ -31,7 +37,6 @@ namespace Dreamland.Core.Vision.Match
             Cv2.Normalize(resultMat, resultMat, 1, 0, NormTypes.MinMax, -1);
 
             return GetMatchResult(searchMat, resultMat, threshold, maxCount, matchModes);
-
         }
 
         /// <summary>
@@ -39,27 +44,36 @@ namespace Dreamland.Core.Vision.Match
         /// </summary>
         /// <param name="searchMat">需要查找的图片</param>
         /// <param name="resultMat">匹配结果</param>
-        /// <param name="threshold"> 阈值，当相识度小于该阈值的时候，就忽略掉</param>
+        /// <param name="threshold"> 相似度匹配的阈值
+        ///     <para>
+        ///         在<see cref="TemplateMatchModes.SqDiff"/>和<see cref="TemplateMatchModes.SqDiffNormed"/>模式下，当相识度大于该阈值的时候，就忽略掉；
+        ///         在其他<see cref="TemplateMatchModes"/>模式下，当相识度小于该阈值的时候，就忽略掉；
+        ///     </para>
+        /// </param>
         /// <param name="maxCount">最大的匹配数</param>
         /// <param name="matchModes">匹配算法</param>
         /// <returns></returns>
-        private static MatchResult GetMatchResult(Mat searchMat, Mat resultMat, double threshold, uint maxCount, TemplateMatchModes matchModes)
+        private static MatchResult GetMatchResult(Mat searchMat, Mat resultMat, double threshold, uint maxCount,
+            TemplateMatchModes matchModes)
         {
             var matchResult = new MatchResult();
             while (matchResult.MatchItems.Count < maxCount)
             {
-                OpenCvSharp.Point topLeft;
-                Cv2.MinMaxLoc(resultMat, out _, out var maxValue, out var minLocation, out var maxLocation);
+                double value;
+                Point topLeft;
+                Cv2.MinMaxLoc(resultMat, out var minValue, out var maxValue, out var minLocation, out var maxLocation);
                 if (matchModes == TemplateMatchModes.SqDiff || matchModes == TemplateMatchModes.SqDiffNormed)
                 {
+                    value = minValue;
                     topLeft = minLocation;
                 }
                 else
                 {
+                    value = maxValue;
                     topLeft = maxLocation;
                 }
 
-                Console.WriteLine($"TemplateMatch Value({threshold:F}) = {maxValue:F}");
+                Console.WriteLine($"TemplateMatch Value({threshold:F}) = {value:F}");
                 if (maxValue < threshold)
                 {
                     break;
@@ -67,13 +81,13 @@ namespace Dreamland.Core.Vision.Match
 
                 var matchItem = new MatchItem()
                 {
-                    Value = maxValue
+                    Value = value
                 };
-
                 var centerX = topLeft.X + (double) searchMat.Width / 2;
                 var centerY = topLeft.Y + (double) searchMat.Height / 2;
                 matchItem.Point = new System.Drawing.Point((int) centerX, (int) centerY);
-                matchItem.Rectangle = new System.Drawing.Rectangle(topLeft.X, topLeft.Y, searchMat.Width, searchMat.Height);
+                matchItem.Rectangle =
+                    new System.Drawing.Rectangle(topLeft.X, topLeft.Y, searchMat.Width, searchMat.Height);
                 matchResult.MatchItems.Add(matchItem);
 
                 //屏蔽已筛选区域
@@ -93,10 +107,10 @@ namespace Dreamland.Core.Vision.Match
 
         internal static TemplateMatchModes ConvertToMatchModes(MatchTemplateType type)
         {
-            var i = (int)type;
+            var i = (int) type;
             if (Enum.IsDefined(typeof(TemplateMatchModes), i))
             {
-                return (TemplateMatchModes)Enum.ToObject(typeof(TemplateMatchModes), i);
+                return (TemplateMatchModes) Enum.ToObject(typeof(TemplateMatchModes), i);
             }
 
             return TemplateMatchModes.CCoeffNormed;

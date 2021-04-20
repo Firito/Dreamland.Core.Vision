@@ -15,11 +15,16 @@ namespace Dreamland.Core.Vision.Match
         /// </summary>
         /// <param name="sourceImage">原始图片</param>
         /// <param name="searchImage">需要查找的图片（宽高不得超过<see cref="sourceImage"/>）</param>
-        /// <param name="threshold"> 阈值，当相识度小于该阈值的时候，就忽略掉</param>
+        /// <param name="threshold"> 相似度匹配的阈值
+        ///     <para>
+        ///         在<see cref="MatchTemplateType.SQDIFF"/>和<see cref="MatchTemplateType.SQDIFF_NORMED"/>模式下，当相识度大于该阈值的时候，就忽略掉；
+        ///         在其他<see cref="MatchTemplateType"/>模式下，当相识度小于该阈值的时候，就忽略掉；
+        ///     </para>
+        /// </param>
         /// <param name="maxCount">最大的匹配数</param>
         /// <param name="type">匹配算法</param>
         /// <returns></returns>
-        public static MatchResult TemplateMatch(string sourceImage, string searchImage, double threshold = 0.8, uint maxCount = 1, MatchTemplateType type = MatchTemplateType.CCOEFF_NORMED)
+        public static MatchResult TemplateMatch(string sourceImage, string searchImage, double threshold = 0.5, uint maxCount = 1, MatchTemplateType type = MatchTemplateType.CCOEFF_NORMED)
         {
             if (!File.Exists(sourceImage))
             {
@@ -48,11 +53,16 @@ namespace Dreamland.Core.Vision.Match
         /// </summary>
         /// <param name="sourceImage">原始图片</param>
         /// <param name="searchImage">需要查找的图片（宽高不得超过<see cref="sourceImage"/>）</param>
-        /// <param name="threshold"> 阈值，当相识度小于该阈值的时候，就忽略掉</param>
+        /// <param name="threshold"> 相似度匹配的阈值
+        ///     <para>
+        ///         在<see cref="MatchTemplateType.SQDIFF"/>和<see cref="MatchTemplateType.SQDIFF_NORMED"/>模式下，当相识度大于该阈值的时候，就忽略掉；
+        ///         在其他<see cref="MatchTemplateType"/>模式下，当相识度小于该阈值的时候，就忽略掉；
+        ///     </para>
+        /// </param>
         /// <param name="maxCount">最大的匹配数</param>
         /// <param name="type">匹配算法</param>
         /// <returns></returns>
-        public static MatchResult TemplateMatch(Bitmap sourceImage, Bitmap searchImage, double threshold = 0.8, uint maxCount = 1, MatchTemplateType type = MatchTemplateType.CCOEFF_NORMED)
+        public static MatchResult TemplateMatch(Bitmap sourceImage, Bitmap searchImage, double threshold = 0.5, uint maxCount = 1, MatchTemplateType type = MatchTemplateType.CCOEFF_NORMED)
         {
             if (sourceImage == null)
             {
@@ -81,11 +91,16 @@ namespace Dreamland.Core.Vision.Match
         /// </summary>
         /// <param name="sourceImageData">原始图片</param>
         /// <param name="searchImageData">需要查找的图片（宽高不得超过<see cref="sourceImageData"/>）</param>
-        /// <param name="threshold"> 阈值，当相识度小于该阈值的时候，就忽略掉</param>
+        /// <param name="threshold"> 相似度匹配的阈值
+        ///     <para>
+        ///         在<see cref="MatchTemplateType.SQDIFF"/>和<see cref="MatchTemplateType.SQDIFF_NORMED"/>模式下，当相识度大于该阈值的时候，就忽略掉；
+        ///         在其他<see cref="MatchTemplateType"/>模式下，当相识度小于该阈值的时候，就忽略掉；
+        ///     </para>
+        /// </param>
         /// <param name="maxCount">最大的匹配数</param>
         /// <param name="type">匹配算法</param>
         /// <returns></returns>
-        public static MatchResult TemplateMatch(byte[] sourceImageData, byte[] searchImageData, double threshold = 0.8, uint maxCount = 1, MatchTemplateType type = MatchTemplateType.CCOEFF_NORMED)
+        public static MatchResult TemplateMatch(byte[] sourceImageData, byte[] searchImageData, double threshold = 0.5, uint maxCount = 1, MatchTemplateType type = MatchTemplateType.CCOEFF_NORMED)
         {
             if (sourceImageData == null)
             {
