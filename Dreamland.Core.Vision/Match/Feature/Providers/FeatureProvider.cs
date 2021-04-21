@@ -3,7 +3,7 @@
 namespace Dreamland.Core.Vision.Match
 {
     [FeatureProviderType(MatchFeatureType.Unknown, Description = "特征点匹配的抽象类。")]
-    internal abstract class FeatureProvider : IMatchFeature
+    internal abstract class FeatureProvider : IFeatureProvider
     {
         public MatchFeatureType MathFeatureType => GetMathFeatureType();
 

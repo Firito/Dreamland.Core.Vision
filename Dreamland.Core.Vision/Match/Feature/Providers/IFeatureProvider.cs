@@ -2,7 +2,7 @@
 
 namespace Dreamland.Core.Vision.Match
 {
-    internal interface IMatchFeature
+    internal interface IFeatureProvider
     {
         /// <summary>
         ///     算法类型

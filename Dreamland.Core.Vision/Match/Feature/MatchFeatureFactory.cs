@@ -7,15 +7,15 @@ namespace Dreamland.Core.Vision.Match
     internal static class MatchFeatureFactory
     {
         /// <summary>
-        ///     根据<see cref="MatchFeatureType"/>创建<see cref="IMatchFeature"/>的实例
+        ///     根据<see cref="MatchFeatureType"/>创建<see cref="IFeatureProvider"/>的实例
         /// </summary>
         /// <param name="featureType"></param>
         /// <returns></returns>
-        public static IMatchFeature CreateMatchFeature(MatchFeatureType featureType)
+        public static IFeatureProvider CreateMatchFeature(MatchFeatureType featureType)
         {
             //通过反射获取所有的 IMatchFeature
             var types = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(x => x.GetInterfaces().Contains(typeof(IMatchFeature)) && !x.IsAbstract && x.IsClass).ToList();
+                .Where(x => x.GetInterfaces().Contains(typeof(IFeatureProvider)) && !x.IsAbstract && x.IsClass).ToList();
 
             if (!types.Any())
             {
@@ -28,7 +28,7 @@ namespace Dreamland.Core.Vision.Match
                 return null;
             }
 
-            return Activator.CreateInstance(type) as IMatchFeature;
+            return Activator.CreateInstance(type) as IFeatureProvider;
         }
 
         /// <summary>
