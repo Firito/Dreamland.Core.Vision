@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Dreamland.Core.Vision.Test.csproj.DotSettings" />
     <None Remove="_TestResources\CvMatchTest\source.jpg" />
     <None Remove="_TestResources\CvMatchTest\test1.png" />
   </ItemGroup>
