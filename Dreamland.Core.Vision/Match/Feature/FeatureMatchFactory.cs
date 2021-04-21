@@ -4,16 +4,16 @@ using System.Reflection;
 
 namespace Dreamland.Core.Vision.Match
 {
-    internal static class MatchFeatureFactory
+    internal static class FeatureMatchFactory
     {
         /// <summary>
-        ///     根据<see cref="MatchFeatureType"/>创建<see cref="IFeatureProvider"/>的实例
+        ///     根据<see cref="FeatureMatchType"/>创建<see cref="IFeatureProvider"/>的实例
         /// </summary>
         /// <param name="featureType"></param>
         /// <returns></returns>
-        public static IFeatureProvider CreateMatchFeature(MatchFeatureType featureType)
+        public static IFeatureProvider CreateFeatureProvider(FeatureMatchType featureType)
         {
-            //通过反射获取所有的 IMatchFeature
+            //通过反射获取所有的 IFeatureProvider
             var types = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(x => x.GetInterfaces().Contains(typeof(IFeatureProvider)) && !x.IsAbstract && x.IsClass).ToList();
 
@@ -32,18 +32,18 @@ namespace Dreamland.Core.Vision.Match
         }
 
         /// <summary>
-        ///     从<see cref="Type"/>中获取<see cref="MatchFeatureType"/>
+        ///     从<see cref="Type"/>中获取<see cref="FeatureMatchType"/>
         /// </summary>
         /// <returns></returns>
-        internal static MatchFeatureType GetMathFeatureTypeFromAttribute(Type type)
+        internal static FeatureMatchType GetMathFeatureTypeFromAttribute(Type type)
         {
             var attribute = type.GetCustomAttribute(typeof(FeatureProviderTypeAttribute));
             if (!(attribute is FeatureProviderTypeAttribute featureProviderType))
             {
-                return MatchFeatureType.Unknown;
+                return FeatureMatchType.Unknown;
             }
 
-            return featureProviderType.MatchFeatureType;
+            return featureProviderType.FeatureMatchType;
         }
     }
 }

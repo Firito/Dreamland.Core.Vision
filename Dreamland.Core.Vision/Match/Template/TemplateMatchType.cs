@@ -6,7 +6,7 @@ namespace Dreamland.Core.Vision.Match
     ///     模版匹配算法
     /// </summary>
     /// <value>openCV支持的模版匹配算法</value>
-    public enum MatchTemplateType
+    public enum TemplateMatchType
     {
         /// <summary>
         ///     平方差匹配

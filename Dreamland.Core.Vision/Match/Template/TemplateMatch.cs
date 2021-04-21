@@ -7,7 +7,7 @@ namespace Dreamland.Core.Vision.Match
     /// <summary>
     ///     模版匹配
     /// </summary>
-    public static class MatchTemplate
+    public static class TemplateMatch
     {
         /// <summary>
         ///     进行模版匹配
@@ -105,7 +105,7 @@ namespace Dreamland.Core.Vision.Match
             return matchResult;
         }
 
-        internal static TemplateMatchModes ConvertToMatchModes(MatchTemplateType type)
+        internal static TemplateMatchModes ConvertToMatchModes(TemplateMatchType type)
         {
             var i = (int) type;
             if (Enum.IsDefined(typeof(TemplateMatchModes), i))

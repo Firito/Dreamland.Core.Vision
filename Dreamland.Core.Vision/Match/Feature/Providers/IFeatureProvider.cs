@@ -7,7 +7,7 @@ namespace Dreamland.Core.Vision.Match
         /// <summary>
         ///     当前 <see cref="IFeatureProvider"/> 所使用的算法类型
         /// </summary>
-        MatchFeatureType MathFeatureType { get; }
+        FeatureMatchType MathFeatureType { get; }
 
         /// <summary>
         ///     进行特征点匹配

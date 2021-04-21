@@ -16,10 +16,10 @@ namespace Dreamland.Core.Vision.Test
     {
         [TestMethod(displayName:"ƒ£∞Ê∆•≈‰≤‚ ‘")]
         [DataTestMethod]
-        [DataRow((double)0.3, (uint)10, MatchTemplateType.SQDIFF_NORMED)]
-        [DataRow((double)0.8, (uint)10, MatchTemplateType.CCORR_NORMED)]
-        [DataRow((double)0.8, (uint)10, MatchTemplateType.CCOEFF_NORMED)]
-        public void TemplateMatchTest(double threshold, uint maxCount, MatchTemplateType type)
+        [DataRow((double)0.3, (uint)10, TemplateMatchType.SQDIFF_NORMED)]
+        [DataRow((double)0.8, (uint)10, TemplateMatchType.CCORR_NORMED)]
+        [DataRow((double)0.8, (uint)10, TemplateMatchType.CCOEFF_NORMED)]
+        public void TemplateMatchTest(double threshold, uint maxCount, TemplateMatchType type)
         {
             var imageFolder = Path.GetFullPath(@".\_TestResources\CvMatchTest");
             var sourceImage = Path.Combine(imageFolder, "source.png");

@@ -7,7 +7,7 @@ namespace Dreamland.Core.Vision.Match
     /// <summary>
     ///     特征点匹配
     /// </summary>
-    internal static class MatchFeature
+    internal static class FeatureMatch
     {
 
     }

@@ -4,13 +4,13 @@ using OpenCvSharp;
 
 namespace Dreamland.Core.Vision.Match
 {
-    [FeatureProviderType(MatchFeatureType.Unknown, Description = "特征点匹配的抽象类。")]
+    [FeatureProviderType(FeatureMatchType.Unknown, Description = "特征点匹配的抽象类。")]
     internal abstract class FeatureProvider : IFeatureProvider
     {
         /// <summary>
         ///     当前 <see cref="IFeatureProvider"/> 所使用的算法类型
         /// </summary>
-        public MatchFeatureType MathFeatureType => GetMathFeatureType();
+        public FeatureMatchType MathFeatureType => GetMathFeatureType();
         
         /// <summary>
         ///     进行特征点匹配
@@ -27,13 +27,13 @@ namespace Dreamland.Core.Vision.Match
         public abstract MatchResult Match(Mat sourceMat, Mat searchMat, double ratio, uint matchPoints);
 
         /// <summary>
-        ///     获取当前类所使用的<see cref="MatchFeatureType"/>
+        ///     获取当前类所使用的<see cref="FeatureMatchType"/>
         /// </summary>
         /// <returns></returns>
-        protected virtual MatchFeatureType GetMathFeatureType()
+        protected virtual FeatureMatchType GetMathFeatureType()
         {
             var type = GetType();
-            return MatchFeatureFactory.GetMathFeatureTypeFromAttribute(type);
+            return FeatureMatchFactory.GetMathFeatureTypeFromAttribute(type);
         }
 
         /// <summary>
