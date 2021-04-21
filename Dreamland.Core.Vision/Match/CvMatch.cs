@@ -83,7 +83,18 @@ namespace Dreamland.Core.Vision.Match
             }
             
             var matchModes = MatchTemplate.ConvertToMatchModes(type);
-            return MatchTemplate.Match(sourceMat, searchMat, threshold, maxCount, matchModes);
+            if (sourceMat.Type() != searchMat.Type())
+            {
+                using var sourceMatC1 = new Mat(sourceMat.Rows, sourceMat.Cols, MatType.CV_8UC1);
+                using var searchMatC1 = new Mat(searchMat.Rows, searchMat.Cols, MatType.CV_8UC1);
+                Cv2.CvtColor(sourceMat, sourceMatC1, ColorConversionCodes.BGR2GRAY);
+                Cv2.CvtColor(searchMat, searchMatC1, ColorConversionCodes.BGR2GRAY);
+                return MatchTemplate.Match(sourceMatC1, searchMatC1, threshold, maxCount, matchModes);
+            }
+            else
+            {
+                return MatchTemplate.Match(sourceMat, searchMat, threshold, maxCount, matchModes);
+            }
         }
 
         /// <summary>
