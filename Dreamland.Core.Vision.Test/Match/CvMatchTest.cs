@@ -21,7 +21,7 @@ namespace Dreamland.Core.Vision.Test
         [DataRow((double)0.8, (uint)10, MatchTemplateType.CCOEFF_NORMED)]
         public void TemplateMatchTest(double threshold, uint maxCount, MatchTemplateType type)
         {
-            var imageFolder = Path.GetFullPath(@".\TestResources\CvMatchTest");
+            var imageFolder = Path.GetFullPath(@".\_TestResources\CvMatchTest");
             var sourceImage = Path.Combine(imageFolder, "source.jpg");
             var testImage1 = Path.Combine(imageFolder, "test1.png");
 
