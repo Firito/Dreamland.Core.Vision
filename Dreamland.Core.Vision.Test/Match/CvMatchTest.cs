@@ -22,7 +22,7 @@ namespace Dreamland.Core.Vision.Test
         public void TemplateMatchTest(double threshold, uint maxCount, MatchTemplateType type)
         {
             var imageFolder = Path.GetFullPath(@".\_TestResources\CvMatchTest");
-            var sourceImage = Path.Combine(imageFolder, "source.jpg");
+            var sourceImage = Path.Combine(imageFolder, "source.png");
             var testImage1 = Path.Combine(imageFolder, "test1.png");
 
             //ÎÄ¼þ²âÊÔ

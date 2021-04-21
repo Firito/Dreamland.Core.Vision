@@ -9,14 +9,19 @@
   <ItemGroup>
     <None Remove="Dreamland.Core.Vision.Test.csproj.DotSettings" />
     <None Remove="_TestResources\CvMatchTest\source.jpg" />
+    <None Remove="_TestResources\CvMatchTest\source.png" />
     <None Remove="_TestResources\CvMatchTest\test1.png" />
+    <None Remove="_TestResources\CvMatchTest\test2.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="_TestResources\CvMatchTest\source.jpg">
+    <Content Include="_TestResources\CvMatchTest\source.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="_TestResources\CvMatchTest\test1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="_TestResources\CvMatchTest\test2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
