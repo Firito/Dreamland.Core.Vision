@@ -23,7 +23,7 @@ namespace Dreamland.Core.Vision.Match
         /// <param name="maxCount">最大的匹配数</param>
         /// <param name="matchModes">匹配算法</param>
         /// <returns></returns>
-        internal static MatchResult Match(Mat sourceMat, Mat searchMat, double threshold, uint maxCount,
+        internal static TemplateMatchResult Match(Mat sourceMat, Mat searchMat, double threshold, uint maxCount,
             TemplateMatchModes matchModes)
         {
             using var resultMat = new Mat();
@@ -53,10 +53,10 @@ namespace Dreamland.Core.Vision.Match
         /// <param name="maxCount">最大的匹配数</param>
         /// <param name="matchModes">匹配算法</param>
         /// <returns></returns>
-        private static MatchResult GetMatchResult(Mat searchMat, Mat resultMat, double threshold, uint maxCount,
+        private static TemplateMatchResult GetMatchResult(Mat searchMat, Mat resultMat, double threshold, uint maxCount,
             TemplateMatchModes matchModes)
         {
-            var matchResult = new MatchResult();
+            var matchResult = new TemplateMatchResult();
             while (matchResult.MatchItems.Count < maxCount)
             {
                 double value;

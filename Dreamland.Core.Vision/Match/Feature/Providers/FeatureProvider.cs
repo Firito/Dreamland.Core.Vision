@@ -24,7 +24,7 @@ namespace Dreamland.Core.Vision.Match
         /// <para><value>值越大，查找时间越长，越精准。默认值为 1。</value></para>
         /// </param>
         /// <returns></returns>
-        public abstract MatchResult Match(Mat sourceMat, Mat searchMat, double ratio, uint matchPoints);
+        public abstract FeatureMatchResult Match(Mat sourceMat, Mat searchMat, double ratio, uint matchPoints);
 
         /// <summary>
         ///     获取当前类所使用的<see cref="FeatureMatchType"/>

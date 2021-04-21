@@ -12,7 +12,7 @@ namespace Dreamland.Core.Vision.Match
     [FeatureProviderType(FeatureMatchType.Sift, Description = "使用Sift算法进行特征点匹配。")]
     internal class SiftFeatureProvider : FeatureProvider
     {
-        public override MatchResult Match(Mat sourceMat, Mat searchMat, double ratio, uint matchPoints)
+        public override FeatureMatchResult Match(Mat sourceMat, Mat searchMat, double ratio, uint matchPoints)
         {
             //创建SIFT
             using var sift = SIFT.Create();
@@ -104,11 +104,11 @@ namespace Dreamland.Core.Vision.Match
             return goodMatches;
         }
 
-        private MatchResult GetMatchResult(IList<DMatch[]> matches, IList<KeyPoint> keySourcePoints)
+        private FeatureMatchResult GetMatchResult(IList<DMatch[]> matches, IList<KeyPoint> keySourcePoints)
         {
             //至少识别3个点才能得到一个几何图形
             var success = matches.Count > 3;
-            var matchResult = new MatchResult()
+            var matchResult = new FeatureMatchResult()
             {
                 Success = success
             };

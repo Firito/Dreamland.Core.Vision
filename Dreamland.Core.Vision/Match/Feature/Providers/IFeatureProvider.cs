@@ -21,6 +21,6 @@ namespace Dreamland.Core.Vision.Match
         /// <para><value>值越大，查找时间越长，越精准。默认值为 2。</value></para>
         /// </param>
         /// <returns></returns>
-        MatchResult Match(Mat sourceMat, Mat searchMat, double ratio = 0.5, uint matchPoints = 2);
+        FeatureMatchResult Match(Mat sourceMat, Mat searchMat, double ratio = 0.5, uint matchPoints = 2);
     }
 }

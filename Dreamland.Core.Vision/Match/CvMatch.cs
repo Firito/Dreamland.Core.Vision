@@ -24,7 +24,7 @@ namespace Dreamland.Core.Vision.Match
         /// <param name="maxCount">最大的匹配数</param>
         /// <param name="type">匹配算法</param>
         /// <returns></returns>
-        public static MatchResult TemplateMatch(string sourceImage, string searchImage, double threshold = 0.5, uint maxCount = 1, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED)
+        public static TemplateMatchResult TemplateMatch(string sourceImage, string searchImage, double threshold = 0.5, uint maxCount = 1, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED)
         {
             if (!File.Exists(sourceImage))
             {
@@ -62,7 +62,7 @@ namespace Dreamland.Core.Vision.Match
         /// <param name="maxCount">最大的匹配数</param>
         /// <param name="type">匹配算法</param>
         /// <returns></returns>
-        public static MatchResult TemplateMatch(Bitmap sourceImage, Bitmap searchImage, double threshold = 0.5, uint maxCount = 1, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED)
+        public static TemplateMatchResult TemplateMatch(Bitmap sourceImage, Bitmap searchImage, double threshold = 0.5, uint maxCount = 1, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED)
         {
             if (sourceImage == null)
             {
@@ -111,7 +111,7 @@ namespace Dreamland.Core.Vision.Match
         /// <param name="maxCount">最大的匹配数</param>
         /// <param name="type">匹配算法</param>
         /// <returns></returns>
-        public static MatchResult TemplateMatch(byte[] sourceImageData, byte[] searchImageData, double threshold = 0.5, uint maxCount = 1, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED)
+        public static TemplateMatchResult TemplateMatch(byte[] sourceImageData, byte[] searchImageData, double threshold = 0.5, uint maxCount = 1, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED)
         {
             if (sourceImageData == null)
             {
