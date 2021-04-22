@@ -51,10 +51,10 @@ namespace Dreamland.Core.Vision.Match
         /// </summary>
         protected virtual void PreviewMathResult(Mat sourceMat, Mat searchMat, 
             IEnumerable<KeyPoint> keySourcePoints, IEnumerable<KeyPoint> keySearchPoints,
-            IEnumerable<IEnumerable<DMatch>> goodMatches)
+            IEnumerable<DMatch> goodMatches)
         {
             using var imgMatch = new Mat();
-            Cv2.DrawMatchesKnn(sourceMat, keySourcePoints, searchMat, keySearchPoints, matches1To2:goodMatches, outImg:imgMatch, flags: DrawMatchesFlags.NotDrawSinglePoints);
+            Cv2.DrawMatches(sourceMat, keySourcePoints, searchMat, keySearchPoints, goodMatches, imgMatch, flags: DrawMatchesFlags.NotDrawSinglePoints);
 
             var windowName = $"预览窗口{Guid.NewGuid()}";
             Cv2.ImShow(windowName, imgMatch);

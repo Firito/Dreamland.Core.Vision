@@ -59,23 +59,30 @@ namespace Dreamland.Core.Vision.Match
         /// <param name="keySourcePoints"></param>
         /// <param name="keySearchPoints"></param>
         /// <returns></returns>
-        private IList<DMatch[]> SelectGoodMatches(IEnumerable<DMatch[]> matches, double ratio, uint matchPoints, IList<KeyPoint> keySourcePoints, IList<KeyPoint> keySearchPoints)
+        private IList<DMatch> SelectGoodMatches(IEnumerable<DMatch[]> matches, double ratio, uint matchPoints, IList<KeyPoint> keySourcePoints, IList<KeyPoint> keySearchPoints)
         {
             var sourcePoints = new List<Point2d>();
             var searchPoints = new List<Point2d>();
-            var goodMatches = new List<DMatch[]>();
+            var goodMatches = new List<DMatch>();
 
             //比较最近邻距离与次近邻距离的SIFT匹配方式
             foreach (var items in matches)
             {
+                if (items.Length == 0)
+                {
+                    continue;
+                }
+
                 if (matchPoints > 1 && (items.Length < 2 || items[0].Distance > ratio * items[1].Distance))
                 {
                     continue;
                 }
 
-                goodMatches.Add(items);
-                sourcePoints.Add(Point2FToPoint2D(keySourcePoints[items[0].QueryIdx].Pt));
-                searchPoints.Add(Point2FToPoint2D(keySearchPoints[items[0].TrainIdx].Pt));
+                //此处直接选择欧氏距离小的匹配关键点
+                var goodMatch = items[0];
+                goodMatches.Add(goodMatch);
+                sourcePoints.Add(Point2FToPoint2D(keySourcePoints[goodMatch.QueryIdx].Pt));
+                searchPoints.Add(Point2FToPoint2D(keySearchPoints[goodMatch.TrainIdx].Pt));
             }
 
             //随机抽样一致(RANSAC)算法 (如果原始的匹配结果为空, 则跳过过滤步骤）
@@ -87,7 +94,7 @@ namespace Dreamland.Core.Vision.Match
                 if (inliersMask.Rows > 10)
                 {
                     inliersMask.GetArray(out byte[] maskBytes);
-                    var inliers = new List<DMatch[]>();
+                    var inliers = new List<DMatch>();
 
                     for (var i = 0; i < maskBytes.Length; i++)
                     {
@@ -104,7 +111,7 @@ namespace Dreamland.Core.Vision.Match
             return goodMatches;
         }
 
-        private FeatureMatchResult GetMatchResult(IList<DMatch[]> matches, IList<KeyPoint> keySourcePoints)
+        private FeatureMatchResult GetMatchResult(IList<DMatch> matches, IList<KeyPoint> keySourcePoints)
         {
             //至少识别3个点才能得到一个几何图形
             var success = matches.Count > 3;
@@ -121,7 +128,7 @@ namespace Dreamland.Core.Vision.Match
 
             foreach (var match in matches)
             {
-                var point = keySourcePoints[match[0].QueryIdx].Pt;
+                var point = keySourcePoints[match.QueryIdx].Pt;
             }
             return null;
         }
