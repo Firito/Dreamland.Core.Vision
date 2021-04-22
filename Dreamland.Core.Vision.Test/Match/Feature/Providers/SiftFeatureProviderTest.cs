@@ -13,11 +13,10 @@ namespace Dreamland.Core.Vision.Test
     {
         [TestMethod(displayName:"Sift算法 特征点匹配测试")]
         [DataTestMethod]
-        [DataRow(0.5, 2)]
-        [DataRow(0.2, 2)]
-        [DataRow(0.5, 5)]
-        [DataRow(0.2, 5)]
-        public void MatchTest(double ratio, int matchPoints)
+        [DataRow(0.5, 3)]
+        [DataRow(0.2, 10)]
+        [DataRow(0.2, 100)]
+        public void MatchTest(double ratio, int threshold)
         {
             var imageFolder = Path.GetFullPath(@".\_TestResources\CvMatchTest");
             var sourceImage = Path.Combine(imageFolder, "source.png");
@@ -27,7 +26,11 @@ namespace Dreamland.Core.Vision.Test
             using var searchMat = new Mat(searchImage, ImreadModes.AnyColor);
 
             var siftFeatureProvider = new SiftFeatureProvider();
-            siftFeatureProvider.Match(sourceMat, searchMat, ratio, (uint) matchPoints);
+            siftFeatureProvider.Match(sourceMat, searchMat, new FeatureMatchArgument()
+            {
+                Ratio = ratio,
+                RansacThreshold = (uint)threshold
+            });
         }
     }
 }

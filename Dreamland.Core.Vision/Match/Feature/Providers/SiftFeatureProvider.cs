@@ -12,7 +12,7 @@ namespace Dreamland.Core.Vision.Match
     [FeatureProviderType(FeatureMatchType.Sift, Description = "使用Sift算法进行特征点匹配。")]
     internal class SiftFeatureProvider : FeatureProvider
     {
-        public override FeatureMatchResult Match(Mat sourceMat, Mat searchMat, double ratio, uint matchPoints)
+        public override FeatureMatchResult Match(Mat sourceMat, Mat searchMat, FeatureMatchArgument argument)
         {
             //创建SIFT
             using var sift = SIFT.Create();
@@ -22,8 +22,8 @@ namespace Dreamland.Core.Vision.Match
             using var searchDescriptors = new Mat();
 
             //提取特征点，并进行特征点描述
-            sift.DetectAndCompute(sourceMat, null, out var keySourcePoints, sourceDescriptors);
-            sift.DetectAndCompute(searchMat, null, out var keySearchPoints, searchDescriptors);
+            sift.DetectAndCompute(sourceMat, null, out var sourceKeyPoints, sourceDescriptors);
+            sift.DetectAndCompute(searchMat, null, out var searchKeyPoints, searchDescriptors);
 
             //创建Brute-force descriptor matcher
             using var bfMatcher = new BFMatcher();
@@ -31,20 +31,20 @@ namespace Dreamland.Core.Vision.Match
             bfMatcher.Add(new List<Mat>() {sourceDescriptors});
             bfMatcher.Train();
             //获得匹配特征点，并提取最优配对
-            var matches = bfMatcher.KnnMatch(sourceDescriptors, searchDescriptors, (int)matchPoints);
+            var matches = bfMatcher.KnnMatch(sourceDescriptors, searchDescriptors, (int)argument.MatchPoints);
 
             //即使使用SIFT算法，但此时没有经过点筛选的匹配效果同样糟糕，所进一步获取优秀匹配点
-            var goodMatches = SelectGoodMatches(matches, ratio, matchPoints, keySourcePoints, keySearchPoints);
+            var goodMatches = SelectGoodMatches(matches, argument, sourceKeyPoints, searchKeyPoints);
             Console.WriteLine($"SIFT FeatureMatch points count : {goodMatches.Count}");
             
             if (Debugger.IsAttached)
             {
                 //调试模式下，查看一下当前阶段的匹配结果
-                PreviewMathResult(sourceMat, searchMat, keySourcePoints, keySearchPoints, goodMatches);
+                PreviewMathResult(sourceMat, searchMat, sourceKeyPoints, searchKeyPoints, goodMatches);
             }
             
             //获取匹配结果
-            return GetMatchResult(goodMatches, keySourcePoints);
+            return GetMatchResult(goodMatches, sourceKeyPoints, searchKeyPoints);
         }
 
         /// <summary>
@@ -54,12 +54,11 @@ namespace Dreamland.Core.Vision.Match
         /// </para>
         /// </summary>
         /// <param name="matches"></param>
-        /// <param name="ratio"></param>
-        /// <param name="matchPoints"></param>
-        /// <param name="keySourcePoints"></param>
-        /// <param name="keySearchPoints"></param>
+        /// <param name="argument"></param>
+        /// <param name="sourceKeyPoints"></param>
+        /// <param name="searchKeyPoints"></param>
         /// <returns></returns>
-        private IList<DMatch> SelectGoodMatches(IEnumerable<DMatch[]> matches, double ratio, uint matchPoints, IList<KeyPoint> keySourcePoints, IList<KeyPoint> keySearchPoints)
+        private IList<DMatch> SelectGoodMatches(IEnumerable<DMatch[]> matches, FeatureMatchArgument argument, IList<KeyPoint> sourceKeyPoints, IList<KeyPoint> searchKeyPoints)
         {
             var sourcePoints = new List<Point2d>();
             var searchPoints = new List<Point2d>();
@@ -73,7 +72,7 @@ namespace Dreamland.Core.Vision.Match
                     continue;
                 }
 
-                if (matchPoints > 1 && (items.Length < 2 || items[0].Distance > ratio * items[1].Distance))
+                if (argument.MatchPoints > 1 && (items.Length < 2 || items[0].Distance > argument.Ratio * items[1].Distance))
                 {
                     continue;
                 }
@@ -81,15 +80,15 @@ namespace Dreamland.Core.Vision.Match
                 //此处直接选择欧氏距离小的匹配关键点
                 var goodMatch = items[0];
                 goodMatches.Add(goodMatch);
-                sourcePoints.Add(Point2FToPoint2D(keySourcePoints[goodMatch.QueryIdx].Pt));
-                searchPoints.Add(Point2FToPoint2D(keySearchPoints[goodMatch.TrainIdx].Pt));
+                sourcePoints.Add(Point2FToPoint2D(sourceKeyPoints[goodMatch.QueryIdx].Pt));
+                searchPoints.Add(Point2FToPoint2D(searchKeyPoints[goodMatch.TrainIdx].Pt));
             }
 
             //随机抽样一致(RANSAC)算法 (如果原始的匹配结果为空, 则跳过过滤步骤）
             if (sourcePoints.Count > 0 && searchPoints.Count > 0)
             {
                 var inliersMask = new Mat();
-                Cv2.FindHomography(sourcePoints, searchPoints, HomographyMethods.Ransac, mask: inliersMask);
+                Cv2.FindHomography(sourcePoints, searchPoints, HomographyMethods.Ransac, argument.RansacThreshold, mask: inliersMask);
                 // 如果通过RANSAC处理后的匹配点大于10个,才应用过滤. 否则使用原始的匹配点结果(匹配点过少的时候通过RANSAC处理后,可能会得到0个匹配点的结果).
                 if (inliersMask.Rows > 10)
                 {
@@ -111,7 +110,7 @@ namespace Dreamland.Core.Vision.Match
             return goodMatches;
         }
 
-        private FeatureMatchResult GetMatchResult(IList<DMatch> matches, IList<KeyPoint> keySourcePoints)
+        private FeatureMatchResult GetMatchResult(IList<DMatch> matches, IList<KeyPoint> sourceKeyPoints, IList<KeyPoint> searchKeyPoints)
         {
             //至少识别3个点才能得到一个几何图形
             var success = matches.Count > 3;
@@ -125,10 +124,12 @@ namespace Dreamland.Core.Vision.Match
                 return matchResult;
             }
 
-
+            var goodSourceKeyPoints = new List<KeyPoint>();
+            var goodSearchKeyPoints = new List<KeyPoint>();
             foreach (var match in matches)
             {
-                var point = keySourcePoints[match.QueryIdx].Pt;
+                goodSourceKeyPoints.Add(sourceKeyPoints[match.QueryIdx]);
+                goodSearchKeyPoints.Add(searchKeyPoints[match.TrainIdx]);
             }
             return null;
         }

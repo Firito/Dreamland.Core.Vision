@@ -11,20 +11,26 @@ namespace Dreamland.Core.Vision.Match
         ///     当前 <see cref="IFeatureProvider"/> 所使用的算法类型
         /// </summary>
         public FeatureMatchType MathFeatureType => GetMathFeatureType();
+
+        /// <summary>
+        ///     进行特征点匹配
+        /// </summary>
+        /// <param name="sourceMat">对应的查询（原始）图像</param>
+        /// <param name="searchMat">对应的训练（模板）图像</param>
+        /// <returns></returns>
+        public FeatureMatchResult Match(Mat sourceMat, Mat searchMat)
+        {
+            return Match(sourceMat, searchMat, new FeatureMatchArgument());
+        }
         
         /// <summary>
         ///     进行特征点匹配
         /// </summary>
         /// <param name="sourceMat">对应的查询（原始）图像</param>
         /// <param name="searchMat">对应的训练（模板）图像</param>
-        /// <param name="ratio">比例阈值
-        /// <para><value>该值用于配置匹配点筛选，降低这个比例阈值，匹配点数目会减少，但更加稳定；反之匹配点增加，但错误识别也会增加。默认值为 0.5。</value></para>
-        /// </param>
-        /// <param name="matchPoints">设置在 <see cref="sourceMat"/> 中每个特征点查询查找 <see cref="matchPoints"/> 个最佳匹配项
-        /// <para><value>值越大，查找时间越长，越精准。默认值为 1。</value></para>
-        /// </param>
+        /// <param name="argument">匹配参数</param>
         /// <returns></returns>
-        public abstract FeatureMatchResult Match(Mat sourceMat, Mat searchMat, double ratio, uint matchPoints);
+        public abstract FeatureMatchResult Match(Mat sourceMat, Mat searchMat, FeatureMatchArgument argument);
 
         /// <summary>
         ///     获取当前类所使用的<see cref="FeatureMatchType"/>
