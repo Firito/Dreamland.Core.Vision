@@ -79,7 +79,7 @@ namespace Dreamland.Core.Vision.Match
                     break;
                 }
 
-                var matchItem = new MatchItem()
+                var matchItem = new TemplateMatchResultItem()
                 {
                     Value = value
                 };
