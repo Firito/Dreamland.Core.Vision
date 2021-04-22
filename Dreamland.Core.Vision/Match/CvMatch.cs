@@ -36,8 +36,8 @@ namespace Dreamland.Core.Vision.Match
                 throw new FileNotFoundException(searchImage);
             }
 
-            using var sourceMat = new Mat(sourceImage, ImreadModes.AnyColor);
-            using var searchMat = new Mat(searchImage, ImreadModes.AnyColor);
+            using var sourceMat = new Mat(sourceImage);
+            using var searchMat = new Mat(searchImage);
 
             if (sourceMat.Width < searchMat.Width || sourceMat.Height < searchMat.Height)
             {
@@ -143,8 +143,8 @@ namespace Dreamland.Core.Vision.Match
                 throw new FileNotFoundException(searchImage);
             }
 
-            using var sourceMat = new Mat(sourceImage, ImreadModes.AnyColor);
-            using var searchMat = new Mat(searchImage, ImreadModes.AnyColor);
+            using var sourceMat = new Mat(sourceImage);
+            using var searchMat = new Mat(searchImage);
 
             if (sourceMat.Width < searchMat.Width || sourceMat.Height < searchMat.Height)
             {

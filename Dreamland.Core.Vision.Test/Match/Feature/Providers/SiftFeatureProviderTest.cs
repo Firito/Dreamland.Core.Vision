@@ -22,8 +22,8 @@ namespace Dreamland.Core.Vision.Test
             var sourceImage = Path.Combine(imageFolder, "source.png");
             var searchImage = Path.Combine(imageFolder, "test1.png");
 
-            using var sourceMat = new Mat(sourceImage, ImreadModes.AnyColor);
-            using var searchMat = new Mat(searchImage, ImreadModes.AnyColor);
+            using var sourceMat = new Mat(sourceImage);
+            using var searchMat = new Mat(searchImage);
 
             var siftFeatureProvider = new SiftFeatureProvider();
             siftFeatureProvider.Match(sourceMat, searchMat, new FeatureMatchArgument()

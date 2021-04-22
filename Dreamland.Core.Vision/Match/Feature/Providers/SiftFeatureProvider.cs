@@ -149,11 +149,12 @@ namespace Dreamland.Core.Vision.Match
                 y1 = Math.Max(point.Y, y1);
             }
 
-            var leftTop = new System.Drawing.Point((int)Math.Min(x, x1), (int)Math.Min(y, y1));
+            var leftTop = new System.Drawing.Point((int) Math.Min(x, x1), (int) Math.Min(y, y1));
             var size = new System.Drawing.Size((int) Math.Abs(x - x1), (int) Math.Abs(y - y1));
             matchResult.MatchItems.Add(new FeatureMatchResultItem()
             {
-                Point = new System.Drawing.Point((int)Math.Abs((x - x1) / 2), (int)Math.Abs((y - y1) / 2)),
+                Point = new System.Drawing.Point((int) (x + (double) size.Width / 2),
+                    (int) (y + (double) size.Height / 2)),
                 FeaturePoints = points,
                 Rectangle = new Rectangle(leftTop, size),
             });
