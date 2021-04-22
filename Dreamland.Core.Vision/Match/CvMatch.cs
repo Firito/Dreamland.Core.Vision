@@ -99,43 +99,6 @@ namespace Dreamland.Core.Vision.Match
         /// <summary>
         ///     进行模版匹配
         /// </summary>
-        /// <param name="sourceImageData">对应的查询（原始）图像</param>
-        /// <param name="searchImageData">对应的训练（模板）图像（宽高不得超过被查询图像）</param>
-        /// <param name="threshold"> 相似度匹配的阈值
-        ///     <para>
-        ///         在<see cref="TemplateMatchType.SQDIFF"/>和<see cref="TemplateMatchType.SQDIFF_NORMED"/>模式下，当相识度大于该阈值的时候，就忽略掉；
-        ///         在其他<see cref="TemplateMatchType"/>模式下，当相识度小于该阈值的时候，就忽略掉；
-        ///     </para>
-        /// </param>
-        /// <param name="maxCount">最大的匹配数</param>
-        /// <param name="type">匹配算法</param>
-        /// <returns></returns>
-        public static TemplateMatchResult TemplateMatch(byte[] sourceImageData, byte[] searchImageData, double threshold = 0.5, uint maxCount = 1, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED)
-        {
-            if (sourceImageData == null)
-            {
-                throw new ArgumentNullException(nameof(sourceImageData));
-            }
-
-            if (searchImageData == null)
-            {
-                throw new ArgumentNullException(nameof(searchImageData));
-            }
-
-            using var sourceMat = Mat.FromImageData(sourceImageData, ImreadModes.AnyColor);
-            using var searchMat = Mat.FromImageData(searchImageData, ImreadModes.AnyColor);
-
-            if (sourceMat.Width < searchMat.Width || sourceMat.Height < searchMat.Height)
-            {
-                throw new ArgumentException("对应的训练（模板）图像searchImageData，宽高不得超过sourceImageData。");
-            }
-            
-            return TemplateMatch(sourceMat, searchMat, threshold, maxCount, type);
-        }
-
-        /// <summary>
-        ///     进行模版匹配
-        /// </summary>
         /// <param name="sourceImage">对应的查询（原始）图像</param>
         /// <param name="searchImage">对应的训练（模板）图像（宽高不得超过被查询图像）</param>
         /// <param name="threshold"> 相似度匹配的阈值
@@ -224,37 +187,6 @@ namespace Dreamland.Core.Vision.Match
             {
                 return FeatureMatch(sourceMat, searchMat, featureMatchType, argument);
             }
-        }
-
-        /// <summary>
-        ///     进行特征点匹配
-        /// </summary>
-        /// <param name="sourceImageData">对应的查询（原始）图像</param>
-        /// <param name="searchImageData">对应的训练（模板）图像（宽高不得超过被查询图像）</param>
-        /// <param name="featureMatchType">特征点匹配算法</param>
-        /// <param name="argument">匹配参数（可选）</param>
-        /// <returns></returns>
-        internal static FeatureMatchResult FeatureMatch(byte[] sourceImageData, byte[] searchImageData, FeatureMatchType featureMatchType = FeatureMatchType.Sift, FeatureMatchArgument argument = null)
-        {
-            if (sourceImageData == null)
-            {
-                throw new ArgumentNullException(nameof(sourceImageData));
-            }
-
-            if (searchImageData == null)
-            {
-                throw new ArgumentNullException(nameof(searchImageData));
-            }
-
-            using var sourceMat = Mat.FromImageData(sourceImageData, ImreadModes.AnyColor);
-            using var searchMat = Mat.FromImageData(searchImageData, ImreadModes.AnyColor);
-
-            if (sourceMat.Width < searchMat.Width || sourceMat.Height < searchMat.Height)
-            {
-                throw new ArgumentException("对应的训练（模板）图像searchImageData，宽高不得超过sourceImageData。");
-            }
-
-            return FeatureMatch(sourceMat, searchMat, featureMatchType, argument);
         }
 
         /// <summary>
