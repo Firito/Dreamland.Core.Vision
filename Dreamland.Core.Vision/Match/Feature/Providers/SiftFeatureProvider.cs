@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using OpenCvSharp;
 using OpenCvSharp.Features2D;
 
@@ -31,18 +32,18 @@ namespace Dreamland.Core.Vision.Match
             bfMatcher.Add(new List<Mat>() {sourceDescriptors});
             bfMatcher.Train();
             //获得匹配特征点，并提取最优配对
-            var matches = bfMatcher.KnnMatch(sourceDescriptors, searchDescriptors, (int)argument.MatchPoints);
+            var matches = bfMatcher.KnnMatch(sourceDescriptors, searchDescriptors, (int) argument.MatchPoints);
 
             //即使使用SIFT算法，但此时没有经过点筛选的匹配效果同样糟糕，所进一步获取优秀匹配点
             var goodMatches = SelectGoodMatches(matches, argument, sourceKeyPoints, searchKeyPoints);
             Console.WriteLine($"SIFT FeatureMatch points count : {goodMatches.Count}");
-            
+
             if (Debugger.IsAttached)
             {
                 //调试模式下，查看一下当前阶段的匹配结果
                 PreviewMathResult(sourceMat, searchMat, sourceKeyPoints, searchKeyPoints, goodMatches);
             }
-            
+
             //获取匹配结果
             return GetMatchResult(goodMatches, sourceKeyPoints, searchKeyPoints);
         }
@@ -58,7 +59,8 @@ namespace Dreamland.Core.Vision.Match
         /// <param name="sourceKeyPoints"></param>
         /// <param name="searchKeyPoints"></param>
         /// <returns></returns>
-        private IList<DMatch> SelectGoodMatches(IEnumerable<DMatch[]> matches, FeatureMatchArgument argument, IList<KeyPoint> sourceKeyPoints, IList<KeyPoint> searchKeyPoints)
+        private IList<DMatch> SelectGoodMatches(IEnumerable<DMatch[]> matches, FeatureMatchArgument argument,
+            IList<KeyPoint> sourceKeyPoints, IList<KeyPoint> searchKeyPoints)
         {
             var sourcePoints = new List<Point2d>();
             var searchPoints = new List<Point2d>();
@@ -72,7 +74,8 @@ namespace Dreamland.Core.Vision.Match
                     continue;
                 }
 
-                if (argument.MatchPoints > 1 && (items.Length < 2 || items[0].Distance > argument.Ratio * items[1].Distance))
+                if (argument.MatchPoints > 1 &&
+                    (items.Length < 2 || items[0].Distance > argument.Ratio * items[1].Distance))
                 {
                     continue;
                 }
@@ -88,7 +91,8 @@ namespace Dreamland.Core.Vision.Match
             if (sourcePoints.Count > 0 && searchPoints.Count > 0)
             {
                 var inliersMask = new Mat();
-                Cv2.FindHomography(sourcePoints, searchPoints, HomographyMethods.Ransac, argument.RansacThreshold, mask: inliersMask);
+                Cv2.FindHomography(sourcePoints, searchPoints, HomographyMethods.Ransac, argument.RansacThreshold,
+                    mask: inliersMask);
                 // 如果通过RANSAC处理后的匹配点大于10个,才应用过滤. 否则使用原始的匹配点结果(匹配点过少的时候通过RANSAC处理后,可能会得到0个匹配点的结果).
                 if (inliersMask.Rows > 10)
                 {
@@ -110,7 +114,8 @@ namespace Dreamland.Core.Vision.Match
             return goodMatches;
         }
 
-        private FeatureMatchResult GetMatchResult(IList<DMatch> matches, IList<KeyPoint> sourceKeyPoints, IList<KeyPoint> searchKeyPoints)
+        private FeatureMatchResult GetMatchResult(IList<DMatch> matches, IList<KeyPoint> sourceKeyPoints,
+            IList<KeyPoint> searchKeyPoints)
         {
             //至少识别3个点才能得到一个几何图形
             var success = matches.Count > 3;
@@ -126,12 +131,33 @@ namespace Dreamland.Core.Vision.Match
 
             var goodSourceKeyPoints = new List<KeyPoint>();
             var goodSearchKeyPoints = new List<KeyPoint>();
+
+            var points = new List<System.Drawing.Point>();
+
+            double x = double.MaxValue, x1 = 0, y = double.MaxValue, y1 = 0;
             foreach (var match in matches)
             {
                 goodSourceKeyPoints.Add(sourceKeyPoints[match.QueryIdx]);
                 goodSearchKeyPoints.Add(searchKeyPoints[match.TrainIdx]);
+
+                var point = sourceKeyPoints[match.QueryIdx].Pt;
+                points.Add(new System.Drawing.Point((int) point.X, (int) point.Y));
+
+                x = Math.Min(point.X, x);
+                x1 = Math.Max(point.X, x1);
+                y = Math.Min(point.Y, y);
+                y1 = Math.Max(point.Y, y1);
             }
-            return null;
+
+            var leftTop = new System.Drawing.Point((int)Math.Min(x, x1), (int)Math.Min(y, y1));
+            var size = new System.Drawing.Size((int) Math.Abs(x - x1), (int) Math.Abs(y - y1));
+            matchResult.MatchItems.Add(new FeatureMatchResultItem()
+            {
+                Point = new System.Drawing.Point((int)Math.Abs((x - x1) / 2), (int)Math.Abs((y - y1) / 2)),
+                FeaturePoints = points,
+                Rectangle = new Rectangle(leftTop, size),
+            });
+            return matchResult;
         }
     }
 }
