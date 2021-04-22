@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<Version>0.0.1-alpha</Version>
+	<Authors>Dreamland</Authors>
+	<Description>为Dreamland项目提供计算机视觉相关功能的支持</Description>
   </PropertyGroup>
 
   <ItemGroup>
