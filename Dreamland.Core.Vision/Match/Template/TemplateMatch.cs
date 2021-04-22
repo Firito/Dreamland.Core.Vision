@@ -27,7 +27,7 @@ namespace Dreamland.Core.Vision.Match
             TemplateMatchModes matchModes)
         {
             using var resultMat = new Mat();
-            resultMat.Create(sourceMat.Cols - searchMat.Cols + 1, sourceMat.Rows - searchMat.Cols + 1,
+            resultMat.Create(sourceMat.Rows - searchMat.Rows + 1, sourceMat.Cols - searchMat.Cols + 1,
                 MatType.CV_32FC1);
 
             //进行模版匹配
