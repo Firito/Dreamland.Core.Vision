@@ -15,8 +15,8 @@ namespace Dreamland.Core.Vision.Match
         /// <summary>
         ///     进行特征点匹配
         /// </summary>
-        /// <param name="sourceMat">原始图像</param>
-        /// <param name="searchMat">要在原始图像中搜索的图像</param>
+        /// <param name="sourceMat">对应的查询（原始）图像</param>
+        /// <param name="searchMat">对应的训练（模板）图像</param>
         /// <param name="ratio">比例阈值
         /// <para><value>该值用于配置匹配点筛选，降低这个比例阈值，匹配点数目会减少，但更加稳定；反之匹配点增加，但错误识别也会增加。默认值为 0.5。</value></para>
         /// </param>

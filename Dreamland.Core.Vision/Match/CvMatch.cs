@@ -13,8 +13,8 @@ namespace Dreamland.Core.Vision.Match
         /// <summary>
         ///     进行模版匹配
         /// </summary>
-        /// <param name="sourceImage">原始图片</param>
-        /// <param name="searchImage">需要查找的图片（宽高不得超过<see cref="sourceImage"/>）</param>
+        /// <param name="sourceImage">对应的查询（原始）图像</param>
+        /// <param name="searchImage">对应的训练（模板）图像（宽高不得超过<see cref="sourceImage"/>）</param>
         /// <param name="threshold"> 相似度匹配的阈值
         ///     <para>
         ///         在<see cref="TemplateMatchType.SQDIFF"/>和<see cref="TemplateMatchType.SQDIFF_NORMED"/>模式下，当相识度大于该阈值的时候，就忽略掉；
@@ -41,7 +41,7 @@ namespace Dreamland.Core.Vision.Match
 
             if (sourceMat.Width < searchMat.Width || sourceMat.Height < searchMat.Height)
             {
-                throw new ArgumentException("需要查找的图片sourceImage，宽高不得超过searchImage。");
+                throw new ArgumentException("对应的训练（模板）图像sourceImage，宽高不得超过searchImage。");
             }
             
             var matchModes = Match.TemplateMatch.ConvertToMatchModes(type);
@@ -51,8 +51,8 @@ namespace Dreamland.Core.Vision.Match
         /// <summary>
         ///     进行模版匹配
         /// </summary>
-        /// <param name="sourceImage">原始图片</param>
-        /// <param name="searchImage">需要查找的图片（宽高不得超过<see cref="sourceImage"/>）</param>
+        /// <param name="sourceImage">对应的查询（原始）图像</param>
+        /// <param name="searchImage">对应的训练（模板）图像（宽高不得超过<see cref="sourceImage"/>）</param>
         /// <param name="threshold"> 相似度匹配的阈值
         ///     <para>
         ///         在<see cref="TemplateMatchType.SQDIFF"/>和<see cref="TemplateMatchType.SQDIFF_NORMED"/>模式下，当相识度大于该阈值的时候，就忽略掉；
@@ -79,7 +79,7 @@ namespace Dreamland.Core.Vision.Match
 
             if (sourceMat.Width < searchMat.Width || sourceMat.Height < searchMat.Height)
             {
-                throw new ArgumentException("需要查找的图片sourceImage，宽高不得超过searchImage。");
+                throw new ArgumentException("对应的训练（模板）图像sourceImage，宽高不得超过searchImage。");
             }
             
             var matchModes = Match.TemplateMatch.ConvertToMatchModes(type);
@@ -100,8 +100,8 @@ namespace Dreamland.Core.Vision.Match
         /// <summary>
         ///     进行模版匹配
         /// </summary>
-        /// <param name="sourceImageData">原始图片</param>
-        /// <param name="searchImageData">需要查找的图片（宽高不得超过<see cref="sourceImageData"/>）</param>
+        /// <param name="sourceImageData">对应的查询（原始）图像</param>
+        /// <param name="searchImageData">对应的训练（模板）图像（宽高不得超过<see cref="sourceImageData"/>）</param>
         /// <param name="threshold"> 相似度匹配的阈值
         ///     <para>
         ///         在<see cref="TemplateMatchType.SQDIFF"/>和<see cref="TemplateMatchType.SQDIFF_NORMED"/>模式下，当相识度大于该阈值的时候，就忽略掉；
@@ -128,7 +128,7 @@ namespace Dreamland.Core.Vision.Match
 
             if (sourceMat.Width < searchMat.Width || sourceMat.Height < searchMat.Height)
             {
-                throw new ArgumentException("需要查找的图片searchImageData，宽高不得超过sourceImageData。");
+                throw new ArgumentException("对应的训练（模板）图像searchImageData，宽高不得超过sourceImageData。");
             }
             
             var matchModes = Match.TemplateMatch.ConvertToMatchModes(type);

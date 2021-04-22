@@ -12,8 +12,8 @@ namespace Dreamland.Core.Vision.Match
         /// <summary>
         ///     进行模版匹配
         /// </summary>
-        /// <param name="sourceMat">原始图片</param>
-        /// <param name="searchMat">需要查找的图片</param>
+        /// <param name="sourceMat">对应的查询（原始）图像</param>
+        /// <param name="searchMat">对应的训练（模板）图像</param>
         /// <param name="threshold"> 相似度匹配的阈值
         ///     <para>
         ///         在<see cref="TemplateMatchModes.SqDiff"/>和<see cref="TemplateMatchModes.SqDiffNormed"/>模式下，当相识度大于该阈值的时候，就忽略掉；
@@ -42,7 +42,7 @@ namespace Dreamland.Core.Vision.Match
         /// <summary>
         ///     获取匹配结果
         /// </summary>
-        /// <param name="searchMat">需要查找的图片</param>
+        /// <param name="searchMat">对应的训练（模板）图像</param>
         /// <param name="resultMat">匹配结果</param>
         /// <param name="threshold"> 相似度匹配的阈值
         ///     <para>
