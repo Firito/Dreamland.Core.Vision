@@ -124,7 +124,7 @@ namespace Dreamland.Core.Vision.Match
         /// <param name="featureMatchType">特征点匹配算法</param>
         /// <param name="argument">匹配参数（可选）</param>
         /// <returns></returns>
-        internal static FeatureMatchResult FeatureMatch(string sourceImage, string searchImage, FeatureMatchType featureMatchType = FeatureMatchType.Sift, FeatureMatchArgument argument = null)
+        public static FeatureMatchResult FeatureMatch(string sourceImage, string searchImage, FeatureMatchType featureMatchType = FeatureMatchType.Sift, FeatureMatchArgument argument = null)
         {
             if (!File.Exists(sourceImage))
             {
@@ -155,7 +155,7 @@ namespace Dreamland.Core.Vision.Match
         /// <param name="featureMatchType">特征点匹配算法</param>
         /// <param name="argument">匹配参数（可选）</param>
         /// <returns></returns>
-        internal static FeatureMatchResult FeatureMatch(Bitmap sourceImage, Bitmap searchImage, FeatureMatchType featureMatchType = FeatureMatchType.Sift, FeatureMatchArgument argument = null)
+        public static FeatureMatchResult FeatureMatch(Bitmap sourceImage, Bitmap searchImage, FeatureMatchType featureMatchType = FeatureMatchType.Sift, FeatureMatchArgument argument = null)
         {
             if (sourceImage == null)
             {
@@ -197,7 +197,7 @@ namespace Dreamland.Core.Vision.Match
         /// <param name="featureMatchType">特征点匹配算法</param>
         /// <param name="argument">匹配参数（可选）</param>
         /// <returns></returns>
-        internal static FeatureMatchResult FeatureMatch(Mat sourceImage, Mat searchImage,
+        public static FeatureMatchResult FeatureMatch(Mat sourceImage, Mat searchImage,
             FeatureMatchType featureMatchType = FeatureMatchType.Sift, FeatureMatchArgument argument = null)
         {
             return argument == null 
