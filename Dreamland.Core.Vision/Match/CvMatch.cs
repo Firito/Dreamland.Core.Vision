@@ -81,7 +81,6 @@ namespace Dreamland.Core.Vision.Match
                 throw new ArgumentException("对应的训练（模板）图像sourceImage，宽高不得超过searchImage。");
             }
             
-            var matchModes = Match.TemplateMatch.ConvertToMatchModes(type);
             if (sourceMat.Type() != searchMat.Type())
             {
                 using var sourceMatC1 = new Mat(sourceMat.Rows, sourceMat.Cols, MatType.CV_8UC1);
@@ -113,7 +112,15 @@ namespace Dreamland.Core.Vision.Match
         public static TemplateMatchResult TemplateMatch(Mat sourceImage, Mat searchImage, double threshold = 0.5, uint maxCount = 1, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED)
         {
             var matchModes = Match.TemplateMatch.ConvertToMatchModes(type);
-            return Match.TemplateMatch.Match(sourceImage, searchImage, threshold, maxCount, matchModes);
+            
+            if (sourceImage.Type() == searchImage.Type())
+                return Match.TemplateMatch.Match(sourceImage, searchImage, threshold, maxCount, matchModes);
+
+            using var sourceMat = new Mat(sourceImage.Rows, sourceImage.Cols, MatType.CV_8UC1);
+            using var searchMat = new Mat(searchImage.Rows, searchImage.Cols, MatType.CV_8UC1);
+            Cv2.CvtColor(sourceImage, sourceMat, ColorConversionCodes.BGR2GRAY);
+            Cv2.CvtColor(searchImage, searchMat, ColorConversionCodes.BGR2GRAY);
+            return Match.TemplateMatch.Match(sourceMat, searchImage, threshold, maxCount, matchModes);
         }
 
         /// <summary>
@@ -175,18 +182,7 @@ namespace Dreamland.Core.Vision.Match
                 throw new ArgumentException("对应的训练（模板）图像sourceImage，宽高不得超过searchImage。");
             }
             
-            if (sourceMat.Type() != searchMat.Type())
-            {
-                using var sourceMatC1 = new Mat(sourceMat.Rows, sourceMat.Cols, MatType.CV_8UC1);
-                using var searchMatC1 = new Mat(searchMat.Rows, searchMat.Cols, MatType.CV_8UC1);
-                Cv2.CvtColor(sourceMat, sourceMatC1, ColorConversionCodes.BGR2GRAY);
-                Cv2.CvtColor(searchMat, searchMatC1, ColorConversionCodes.BGR2GRAY);
-                return FeatureMatch(sourceMatC1, searchMatC1, featureMatchType, argument);
-            }
-            else
-            {
-                return FeatureMatch(sourceMat, searchMat, featureMatchType, argument);
-            }
+            return FeatureMatch(sourceMat, searchMat, featureMatchType, argument);
         }
 
         /// <summary>
@@ -200,9 +196,18 @@ namespace Dreamland.Core.Vision.Match
         public static FeatureMatchResult FeatureMatch(Mat sourceImage, Mat searchImage,
             FeatureMatchType featureMatchType = FeatureMatchType.Sift, FeatureMatchArgument argument = null)
         {
+            if (sourceImage.Type() == searchImage.Type())
+                return argument == null
+                    ? Match.FeatureMatch.Match(sourceImage, searchImage, featureMatchType)
+                    : Match.FeatureMatch.Match(sourceImage, searchImage, featureMatchType, argument);
+
+            using var sourceMat = new Mat(sourceImage.Rows, sourceImage.Cols, MatType.CV_8UC1);
+            using var searchMat = new Mat(searchImage.Rows, searchImage.Cols, MatType.CV_8UC1);
+            Cv2.CvtColor(sourceImage, sourceMat, ColorConversionCodes.BGR2GRAY);
+            Cv2.CvtColor(searchImage, searchMat, ColorConversionCodes.BGR2GRAY);
             return argument == null 
-                ? Match.FeatureMatch.Match(sourceImage, searchImage, featureMatchType) 
-                : Match.FeatureMatch.Match(sourceImage, searchImage, featureMatchType, argument);
+                ? Match.FeatureMatch.Match(sourceMat, sourceMat, featureMatchType) 
+                : Match.FeatureMatch.Match(sourceMat, sourceMat, featureMatchType, argument);
         }
     }
 }
