@@ -14,18 +14,12 @@ namespace Dreamland.Core.Vision.Match
         /// </summary>
         /// <param name="sourceMat">对应的查询（原始）图像</param>
         /// <param name="searchMat">对应的训练（模板）图像</param>
-        /// <param name="threshold"> 相似度匹配的阈值
-        ///     <para>
-        ///         在<see cref="TemplateMatchModes.SqDiff"/>和<see cref="TemplateMatchModes.SqDiffNormed"/>模式下，当相识度大于该阈值的时候，就忽略掉；
-        ///         在其他<see cref="TemplateMatchModes"/>模式下，当相识度小于该阈值的时候，就忽略掉；
-        ///     </para>
-        /// </param>
-        /// <param name="maxCount">最大的匹配数</param>
-        /// <param name="matchModes">匹配算法</param>
+        /// <param name="type">匹配算法</param>
+        /// <param name="argument">匹配参数（可选）</param>
         /// <returns></returns>
-        internal static TemplateMatchResult Match(Mat sourceMat, Mat searchMat, double threshold, uint maxCount,
-            TemplateMatchModes matchModes)
-        {
+        internal static TemplateMatchResult Match(Mat sourceMat, Mat searchMat, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED, TemplateMatchArgument argument = null)
+        { 
+            var matchModes = ConvertToMatchModes(type);
             using var resultMat = new Mat();
             resultMat.Create(sourceMat.Rows - searchMat.Rows + 1, sourceMat.Cols - searchMat.Cols + 1,
                 MatType.CV_32FC1);
@@ -36,7 +30,9 @@ namespace Dreamland.Core.Vision.Match
             //对结果进行归一化
             Cv2.Normalize(resultMat, resultMat, 1, 0, NormTypes.MinMax, -1);
 
-            return GetMatchResult(searchMat, resultMat, threshold, maxCount, matchModes);
+            //如果没有传入匹配参数，则使用默认参数
+            argument ??= new TemplateMatchArgument();
+            return GetMatchResult(searchMat, resultMat, matchModes, argument);
         }
 
         /// <summary>
@@ -44,18 +40,14 @@ namespace Dreamland.Core.Vision.Match
         /// </summary>
         /// <param name="searchMat">对应的训练（模板）图像</param>
         /// <param name="resultMat">匹配结果</param>
-        /// <param name="threshold"> 相似度匹配的阈值
-        ///     <para>
-        ///         在<see cref="TemplateMatchModes.SqDiff"/>和<see cref="TemplateMatchModes.SqDiffNormed"/>模式下，当相识度大于该阈值的时候，就忽略掉；
-        ///         在其他<see cref="TemplateMatchModes"/>模式下，当相识度小于该阈值的时候，就忽略掉；
-        ///     </para>
-        /// </param>
-        /// <param name="maxCount">最大的匹配数</param>
         /// <param name="matchModes">匹配算法</param>
+        /// <param name="argument">匹配参数</param>
         /// <returns></returns>
-        private static TemplateMatchResult GetMatchResult(Mat searchMat, Mat resultMat, double threshold, uint maxCount,
-            TemplateMatchModes matchModes)
+        private static TemplateMatchResult GetMatchResult(Mat searchMat, Mat resultMat, TemplateMatchModes matchModes, TemplateMatchArgument argument)
         {
+            var threshold = argument.Threshold;
+            var maxCount = argument.MaxCount; 
+
             var matchResult = new TemplateMatchResult();
             while (matchResult.MatchItems.Count < maxCount)
             {

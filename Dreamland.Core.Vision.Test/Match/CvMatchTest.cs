@@ -27,7 +27,11 @@ namespace Dreamland.Core.Vision.Test
             var testImage1 = Path.Combine(imageFolder, "test1.png");
 
             //Œƒº˛≤‚ ‘
-            var matchResult = CvMatch.TemplateMatch(sourceImage, testImage1, threshold, maxCount, type);
+            var matchResult = CvMatch.TemplateMatch(sourceImage, testImage1, type, new TemplateMatchArgument()
+            {
+                MaxCount = maxCount,
+                Threshold = threshold
+            });
             Assert.IsTrue(matchResult.Success && matchResult.MatchItems.Any());
             
 #if DEBUG
@@ -45,7 +49,11 @@ namespace Dreamland.Core.Vision.Test
             //Bitmap≤‚ ‘
             using var sourceBitmap = new Bitmap(sourceImage);
             using var testBitmap1 = new Bitmap(testImage1);
-            matchResult = CvMatch.TemplateMatch(sourceBitmap, testBitmap1, threshold, maxCount, type);
+            matchResult = CvMatch.TemplateMatch(sourceBitmap, testBitmap1, type, new TemplateMatchArgument()
+            {
+                MaxCount = maxCount,
+                Threshold = threshold
+            });
             Assert.IsTrue(matchResult.Success && matchResult.MatchItems.Any());
 
 #if DEBUG

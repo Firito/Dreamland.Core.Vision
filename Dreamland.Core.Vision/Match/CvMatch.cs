@@ -15,16 +15,10 @@ namespace Dreamland.Core.Vision.Match
         /// </summary>
         /// <param name="sourceImage">对应的查询（原始）图像</param>
         /// <param name="searchImage">对应的训练（模板）图像（宽高不得超过被查询图像）</param>
-        /// <param name="threshold"> 相似度匹配的阈值
-        ///     <para>
-        ///         在<see cref="TemplateMatchType.SQDIFF"/>和<see cref="TemplateMatchType.SQDIFF_NORMED"/>模式下，当相识度大于该阈值的时候，就忽略掉；
-        ///         在其他<see cref="TemplateMatchType"/>模式下，当相识度小于该阈值的时候，就忽略掉；
-        ///     </para>
-        /// </param>
-        /// <param name="maxCount">最大的匹配数</param>
         /// <param name="type">匹配算法</param>
+        /// <param name="argument">匹配参数（可选）</param>
         /// <returns></returns>
-        public static TemplateMatchResult TemplateMatch(string sourceImage, string searchImage, double threshold = 0.5, uint maxCount = 1, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED)
+        public static TemplateMatchResult TemplateMatch(string sourceImage, string searchImage, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED, TemplateMatchArgument argument = null)
         {
             if (!File.Exists(sourceImage))
             {
@@ -44,7 +38,7 @@ namespace Dreamland.Core.Vision.Match
                 throw new ArgumentException("对应的训练（模板）图像sourceImage，宽高不得超过searchImage。");
             }
             
-            return TemplateMatch(sourceMat, searchMat, threshold, maxCount, type);
+            return TemplateMatch(sourceMat, searchMat, type, argument);
         }
 
         /// <summary>
@@ -52,16 +46,10 @@ namespace Dreamland.Core.Vision.Match
         /// </summary>
         /// <param name="sourceImage">对应的查询（原始）图像</param>
         /// <param name="searchImage">对应的训练（模板）图像（宽高不得超过被查询图像）</param>
-        /// <param name="threshold"> 相似度匹配的阈值
-        ///     <para>
-        ///         在<see cref="TemplateMatchType.SQDIFF"/>和<see cref="TemplateMatchType.SQDIFF_NORMED"/>模式下，当相识度大于该阈值的时候，就忽略掉；
-        ///         在其他<see cref="TemplateMatchType"/>模式下，当相识度小于该阈值的时候，就忽略掉；
-        ///     </para>
-        /// </param>
-        /// <param name="maxCount">最大的匹配数</param>
         /// <param name="type">匹配算法</param>
+        /// <param name="argument">匹配参数（可选）</param>
         /// <returns></returns>
-        public static TemplateMatchResult TemplateMatch(Bitmap sourceImage, Bitmap searchImage, double threshold = 0.5, uint maxCount = 1, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED)
+        public static TemplateMatchResult TemplateMatch(Bitmap sourceImage, Bitmap searchImage, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED, TemplateMatchArgument argument = null)
         {
             if (sourceImage == null)
             {
@@ -81,18 +69,7 @@ namespace Dreamland.Core.Vision.Match
                 throw new ArgumentException("对应的训练（模板）图像sourceImage，宽高不得超过searchImage。");
             }
             
-            if (sourceMat.Type() != searchMat.Type())
-            {
-                using var sourceMatC1 = new Mat(sourceMat.Rows, sourceMat.Cols, MatType.CV_8UC1);
-                using var searchMatC1 = new Mat(searchMat.Rows, searchMat.Cols, MatType.CV_8UC1);
-                Cv2.CvtColor(sourceMat, sourceMatC1, ColorConversionCodes.BGR2GRAY);
-                Cv2.CvtColor(searchMat, searchMatC1, ColorConversionCodes.BGR2GRAY);
-                return TemplateMatch(sourceMatC1, searchMatC1, threshold, maxCount, type);
-            }
-            else
-            {
-                return TemplateMatch(sourceMat, searchMat, threshold, maxCount, type);
-            }
+            return TemplateMatch(sourceMat, searchMat, type, argument);
         }
 
         /// <summary>
@@ -100,27 +77,19 @@ namespace Dreamland.Core.Vision.Match
         /// </summary>
         /// <param name="sourceImage">对应的查询（原始）图像</param>
         /// <param name="searchImage">对应的训练（模板）图像（宽高不得超过被查询图像）</param>
-        /// <param name="threshold"> 相似度匹配的阈值
-        ///     <para>
-        ///         在<see cref="TemplateMatchType.SQDIFF"/>和<see cref="TemplateMatchType.SQDIFF_NORMED"/>模式下，当相识度大于该阈值的时候，就忽略掉；
-        ///         在其他<see cref="TemplateMatchType"/>模式下，当相识度小于该阈值的时候，就忽略掉；
-        ///     </para>
-        /// </param>
-        /// <param name="maxCount">最大的匹配数</param>
         /// <param name="type">匹配算法</param>
+        /// <param name="argument">匹配参数（可选）</param>
         /// <returns></returns>
-        public static TemplateMatchResult TemplateMatch(Mat sourceImage, Mat searchImage, double threshold = 0.5, uint maxCount = 1, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED)
+        public static TemplateMatchResult TemplateMatch(Mat sourceImage, Mat searchImage, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED, TemplateMatchArgument argument = null)
         {
-            var matchModes = Match.TemplateMatch.ConvertToMatchModes(type);
-            
             if (sourceImage.Type() == searchImage.Type())
-                return Match.TemplateMatch.Match(sourceImage, searchImage, threshold, maxCount, matchModes);
+                return Match.TemplateMatch.Match(sourceImage, searchImage, type, argument);
 
             using var sourceMat = new Mat(sourceImage.Rows, sourceImage.Cols, MatType.CV_8UC1);
             using var searchMat = new Mat(searchImage.Rows, searchImage.Cols, MatType.CV_8UC1);
             Cv2.CvtColor(sourceImage, sourceMat, ColorConversionCodes.BGR2GRAY);
             Cv2.CvtColor(searchImage, searchMat, ColorConversionCodes.BGR2GRAY);
-            return Match.TemplateMatch.Match(sourceMat, searchImage, threshold, maxCount, matchModes);
+            return Match.TemplateMatch.Match(sourceMat, searchImage, type, argument);
         }
 
         /// <summary>
