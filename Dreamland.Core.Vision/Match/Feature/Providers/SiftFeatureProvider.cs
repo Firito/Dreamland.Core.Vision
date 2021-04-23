@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using OpenCvSharp;
 using OpenCvSharp.Features2D;
@@ -13,6 +12,12 @@ namespace Dreamland.Core.Vision.Match
     [FeatureProviderType(FeatureMatchType.Sift, Description = "使用Sift算法进行特征点匹配。")]
     internal class SiftFeatureProvider : FeatureProvider
     {
+        /// <summary>
+        ///     Homography算法最低要求的Point点数
+        /// </summary>
+        /// <value>The input arrays should have at least 4 corresponding point sets to calculate Homography</value>
+        private const int MinCorrespondingPointCount = 4; 
+
         public override FeatureMatchResult Match(Mat sourceMat, Mat searchMat, FeatureMatchArgument argument)
         {
             //创建SIFT
@@ -92,7 +97,7 @@ namespace Dreamland.Core.Vision.Match
             }
 
             //随机抽样一致(RANSAC)算法 (如果原始的匹配结果为空, 则跳过过滤步骤）
-            if (sourcePoints.Count > 0 && searchPoints.Count > 0)
+            if (sourcePoints.Count >= MinCorrespondingPointCount && searchPoints.Count >= MinCorrespondingPointCount)
             {
                 var inliersMask = new Mat();
                 Cv2.FindHomography(sourcePoints, searchPoints, HomographyMethods.Ransac, argument.RansacThreshold,
