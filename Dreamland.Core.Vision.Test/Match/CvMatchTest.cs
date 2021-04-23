@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -77,7 +78,11 @@ namespace Dreamland.Core.Vision.Test
             var matchResult = CvMatch.FeatureMatch(sourceImage, testImage1, type, new FeatureMatchArgument()
             {
                 Ratio = ratio,
-                RansacThreshold = (uint)threshold
+                RansacThreshold = (uint)threshold,
+                ExtensionConfig = new Dictionary<string, object>()
+                {
+                    {"DebugPreview", true }
+                }
             });
             Assert.IsTrue(matchResult.Success && matchResult.MatchItems.Any());
             

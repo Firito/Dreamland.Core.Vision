@@ -62,10 +62,27 @@ namespace Dreamland.Core.Vision.Match
             using var imgMatch = new Mat();
             Cv2.DrawMatches(sourceMat, keySourcePoints, searchMat, keySearchPoints, goodMatches, imgMatch, flags: DrawMatchesFlags.NotDrawSinglePoints);
 
-            var windowName = $"预览窗口{Guid.NewGuid()}";
-            Cv2.ImShow(windowName, imgMatch);
-            Cv2.WaitKey(5000);
-            Cv2.DestroyWindow(windowName);
+            const int maxHeight = 500;
+            if (imgMatch.Height < maxHeight)
+            {
+                ImShow(imgMatch);
+                return;
+            }
+
+            var radio = (double) imgMatch.Width / imgMatch.Height;
+            var resizeWidth = maxHeight * radio;
+            var size = new Size(resizeWidth, maxHeight);
+            using var resizeMat = new Mat(size, imgMatch.Type());
+            Cv2.Resize(imgMatch, resizeMat, size);
+            ImShow(resizeMat);
+
+            void ImShow(Mat img)
+            {
+                var windowName = $"预览窗口{Guid.NewGuid()}";
+                Cv2.ImShow(windowName, img);
+                Cv2.WaitKey(5000);
+                Cv2.DestroyWindow(windowName);
+            }
         }
     }
 }

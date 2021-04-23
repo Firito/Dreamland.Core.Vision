@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Dreamland.Core.Vision.Match
 {
@@ -26,5 +24,12 @@ namespace Dreamland.Core.Vision.Match
         /// <para>值越小，表示所允许的误差越小。</para>
         /// </summary>
         public uint RansacThreshold  { get; set; } = 3;
+
+        /// <summary>
+        ///     拓展配置
+        /// <para>提供一些额外配置</para>
+        /// </summary>
+        /// <value>DebugPreview:true 在DEBUG模式下，开启匹配结果的预览</value>
+        public Dictionary<string, object> ExtensionConfig { get; set; }
     }
 }
