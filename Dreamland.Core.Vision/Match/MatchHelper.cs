@@ -1,7 +1,6 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using OpenCvSharp;
 using Range = OpenCvSharp.Range;
 
 namespace Dreamland.Core.Vision.Match
@@ -33,7 +32,7 @@ namespace Dreamland.Core.Vision.Match
         /// <summary>
         ///     预览匹配结果
         /// </summary>
-        internal static void PreviewFeatureMatchResult(FeatureMatchResult matchResult, Mat sourceMat, Mat searchMat, 
+        internal static void PreviewFeatureMatchResult(FeatureMatchResult matchResult, Mat sourceMat, Mat searchMat,
             IEnumerable<KeyPoint> keySourcePoints, IEnumerable<KeyPoint> keySearchPoints,
             IEnumerable<DMatch> goodMatches)
         {
@@ -66,7 +65,7 @@ namespace Dreamland.Core.Vision.Match
             }
             else
             {
-                var radio = (double) imageMat.Width / imageMat.Height;
+                var radio = (double)imageMat.Width / imageMat.Height;
                 var resizeWidth = maxHeight * radio;
                 var size = new Size(resizeWidth, maxHeight);
                 using var resizeMat = new Mat(size, imageMat.Type());

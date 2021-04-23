@@ -1,8 +1,8 @@
-﻿using System;
+﻿using OpenCvSharp;
+using OpenCvSharp.Features2D;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using OpenCvSharp;
-using OpenCvSharp.Features2D;
 
 namespace Dreamland.Core.Vision.Match
 {
@@ -16,7 +16,7 @@ namespace Dreamland.Core.Vision.Match
         ///     Homography算法最低要求的Point点数
         /// </summary>
         /// <value>The input arrays should have at least 4 corresponding point sets to calculate Homography</value>
-        private const int MinCorrespondingPointCount = 4; 
+        private const int MinCorrespondingPointCount = 4;
 
         public override FeatureMatchResult Match(Mat sourceMat, Mat searchMat, FeatureMatchArgument argument)
         {
@@ -34,10 +34,10 @@ namespace Dreamland.Core.Vision.Match
             //创建Brute-force descriptor matcher
             using var bfMatcher = new BFMatcher();
             //对原图特征点描述加入训练
-            bfMatcher.Add(new List<Mat>() {sourceDescriptors});
+            bfMatcher.Add(new List<Mat>() { sourceDescriptors });
             bfMatcher.Train();
             //获得匹配特征点，并提取最优配对
-            var matches = bfMatcher.KnnMatch(sourceDescriptors, searchDescriptors, (int) argument.MatchPoints);
+            var matches = bfMatcher.KnnMatch(sourceDescriptors, searchDescriptors, (int)argument.MatchPoints);
 
             //即使使用SIFT算法，但此时没有经过点筛选的匹配效果同样糟糕，所进一步获取优秀匹配点
             var goodMatches = SelectGoodMatches(matches, argument, sourceKeyPoints, searchKeyPoints);
@@ -150,7 +150,7 @@ namespace Dreamland.Core.Vision.Match
                 goodSearchKeyPoints.Add(searchKeyPoints[match.TrainIdx]);
 
                 var point = sourceKeyPoints[match.QueryIdx].Pt;
-                points.Add(new System.Drawing.Point((int) point.X, (int) point.Y));
+                points.Add(new System.Drawing.Point((int)point.X, (int)point.Y));
 
                 x = Math.Min(point.X, x);
                 x1 = Math.Max(point.X, x1);
@@ -158,12 +158,12 @@ namespace Dreamland.Core.Vision.Match
                 y1 = Math.Max(point.Y, y1);
             }
 
-            var leftTop = new System.Drawing.Point((int) Math.Min(x, x1), (int) Math.Min(y, y1));
-            var size = new System.Drawing.Size((int) Math.Abs(x - x1), (int) Math.Abs(y - y1));
+            var leftTop = new System.Drawing.Point((int)Math.Min(x, x1), (int)Math.Min(y, y1));
+            var size = new System.Drawing.Size((int)Math.Abs(x - x1), (int)Math.Abs(y - y1));
             matchResult.MatchItems.Add(new FeatureMatchResultItem()
             {
-                Point = new System.Drawing.Point((int) (x + (double) size.Width / 2),
-                    (int) (y + (double) size.Height / 2)),
+                Point = new System.Drawing.Point((int)(x + (double)size.Width / 2),
+                    (int)(y + (double)size.Height / 2)),
                 FeaturePoints = points,
                 Rectangle = new Rectangle(leftTop, size),
             });

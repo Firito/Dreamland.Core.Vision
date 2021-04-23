@@ -20,7 +20,7 @@ namespace Dreamland.Core.Vision.Match
         {
             return Match(sourceMat, searchMat, new FeatureMatchArgument());
         }
-        
+
         /// <summary>
         ///     进行特征点匹配
         /// </summary>

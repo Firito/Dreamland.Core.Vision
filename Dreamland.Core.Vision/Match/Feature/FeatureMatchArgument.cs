@@ -23,7 +23,7 @@ namespace Dreamland.Core.Vision.Match
         ///     使用Ransac算法减少噪声
         /// <para>值越小，表示所允许的误差越小。</para>
         /// </summary>
-        public uint RansacThreshold  { get; set; } = 3;
+        public uint RansacThreshold { get; set; } = 3;
 
         /// <summary>
         ///     拓展配置

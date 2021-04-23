@@ -1,7 +1,7 @@
 ﻿using OpenCvSharp;
+using PInvoke;
 using System;
 using System.Diagnostics;
-using PInvoke;
 
 namespace Dreamland.Core.Vision.Capture
 {

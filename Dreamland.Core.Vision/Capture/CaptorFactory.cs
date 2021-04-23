@@ -1,6 +1,4 @@
-﻿using Dreamland.Core.Vision.Capture.Captors;
-
-namespace Dreamland.Core.Vision.Capture
+﻿namespace Dreamland.Core.Vision.Capture
 {
     /// <summary>
     ///     用于创建 <see cref="ICaptor"/> 的工厂

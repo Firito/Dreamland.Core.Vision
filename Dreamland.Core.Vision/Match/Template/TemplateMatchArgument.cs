@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using OpenCvSharp;
+﻿using OpenCvSharp;
+using System.Collections.Generic;
 
 namespace Dreamland.Core.Vision.Match
 {

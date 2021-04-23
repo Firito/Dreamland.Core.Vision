@@ -1,7 +1,7 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Drawing;
 using System.IO;
-using OpenCvSharp;
 
 namespace Dreamland.Core.Vision.Match
 {
@@ -37,7 +37,7 @@ namespace Dreamland.Core.Vision.Match
             {
                 throw new ArgumentException("对应的训练（模板）图像sourceImage，宽高不得超过searchImage。");
             }
-            
+
             return TemplateMatch(sourceMat, searchMat, type, argument);
         }
 
@@ -68,7 +68,7 @@ namespace Dreamland.Core.Vision.Match
             {
                 throw new ArgumentException("对应的训练（模板）图像sourceImage，宽高不得超过searchImage。");
             }
-            
+
             return TemplateMatch(sourceMat, searchMat, type, argument);
         }
 
@@ -119,7 +119,7 @@ namespace Dreamland.Core.Vision.Match
             {
                 throw new ArgumentException("对应的训练（模板）图像sourceImage，宽高不得超过searchImage。");
             }
-            
+
             return FeatureMatch(sourceMat, searchMat, featureMatchType, argument);
         }
 
@@ -150,7 +150,7 @@ namespace Dreamland.Core.Vision.Match
             {
                 throw new ArgumentException("对应的训练（模板）图像sourceImage，宽高不得超过searchImage。");
             }
-            
+
             return FeatureMatch(sourceMat, searchMat, featureMatchType, argument);
         }
 
@@ -174,8 +174,8 @@ namespace Dreamland.Core.Vision.Match
             using var searchMat = new Mat(searchImage.Rows, searchImage.Cols, MatType.CV_8UC1);
             Cv2.CvtColor(sourceImage, sourceMat, ColorConversionCodes.BGR2GRAY);
             Cv2.CvtColor(searchImage, searchMat, ColorConversionCodes.BGR2GRAY);
-            return argument == null 
-                ? Match.FeatureMatch.Match(sourceMat, sourceMat, featureMatchType) 
+            return argument == null
+                ? Match.FeatureMatch.Match(sourceMat, sourceMat, featureMatchType)
                 : Match.FeatureMatch.Match(sourceMat, sourceMat, featureMatchType, argument);
         }
     }

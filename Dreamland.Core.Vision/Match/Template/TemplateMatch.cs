@@ -1,6 +1,6 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Linq;
-using OpenCvSharp;
 
 namespace Dreamland.Core.Vision.Match
 {
@@ -18,7 +18,7 @@ namespace Dreamland.Core.Vision.Match
         /// <param name="argument">匹配参数（可选）</param>
         /// <returns></returns>
         internal static TemplateMatchResult Match(Mat sourceMat, Mat searchMat, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED, TemplateMatchArgument argument = null)
-        { 
+        {
             var matchModes = ConvertToMatchModes(type);
             using var resultMat = new Mat();
             resultMat.Create(sourceMat.Rows - searchMat.Rows + 1, sourceMat.Cols - searchMat.Cols + 1,
@@ -33,7 +33,7 @@ namespace Dreamland.Core.Vision.Match
             //如果没有传入匹配参数，则使用默认参数
             argument ??= new TemplateMatchArgument();
             var matchResult = GetMatchResult(searchMat, resultMat, matchModes, argument);
-            
+
             //如果开启了匹配结果预览，则显示匹配结果
             if (argument.ExtensionConfig != null &&
                 argument.ExtensionConfig.TryGetValue("PreviewMatchResult", out var isEnabled) && isEnabled is true)
@@ -56,7 +56,7 @@ namespace Dreamland.Core.Vision.Match
         private static TemplateMatchResult GetMatchResult(Mat searchMat, Mat resultMat, TemplateMatchModes matchModes, TemplateMatchArgument argument)
         {
             var threshold = argument.Threshold;
-            var maxCount = argument.MaxCount; 
+            var maxCount = argument.MaxCount;
 
             var matchResult = new TemplateMatchResult();
             while (matchResult.MatchItems.Count < maxCount)
@@ -85,9 +85,9 @@ namespace Dreamland.Core.Vision.Match
                 {
                     Value = value
                 };
-                var centerX = topLeft.X + (double) searchMat.Width / 2;
-                var centerY = topLeft.Y + (double) searchMat.Height / 2;
-                matchItem.Point = new System.Drawing.Point((int) centerX, (int) centerY);
+                var centerX = topLeft.X + (double)searchMat.Width / 2;
+                var centerY = topLeft.Y + (double)searchMat.Height / 2;
+                matchItem.Point = new System.Drawing.Point((int)centerX, (int)centerY);
                 matchItem.Rectangle =
                     new System.Drawing.Rectangle(topLeft.X, topLeft.Y, searchMat.Width, searchMat.Height);
                 matchResult.MatchItems.Add(matchItem);
@@ -109,10 +109,10 @@ namespace Dreamland.Core.Vision.Match
 
         internal static TemplateMatchModes ConvertToMatchModes(TemplateMatchType type)
         {
-            var i = (int) type;
+            var i = (int)type;
             if (Enum.IsDefined(typeof(TemplateMatchModes), i))
             {
-                return (TemplateMatchModes) Enum.ToObject(typeof(TemplateMatchModes), i);
+                return (TemplateMatchModes)Enum.ToObject(typeof(TemplateMatchModes), i);
             }
 
             return TemplateMatchModes.CCoeffNormed;

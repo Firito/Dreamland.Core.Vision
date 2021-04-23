@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 #pragma warning disable 1591
 // ReSharper disable All
 
-namespace Dreamland.Core.Vision.Capture.Captors
+namespace Dreamland.Core.Vision.Capture
 {
     internal static class Gdi32Extension
     {

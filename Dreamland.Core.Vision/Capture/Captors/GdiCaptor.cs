@@ -1,8 +1,8 @@
-﻿using System;
-using OpenCvSharp;
+﻿using OpenCvSharp;
 using PInvoke;
+using System;
 
-namespace Dreamland.Core.Vision.Capture.Captors
+namespace Dreamland.Core.Vision.Capture
 {
     /// <summary>
     ///     基于Gdi的捕获器
@@ -34,7 +34,7 @@ namespace Dreamland.Core.Vision.Capture.Captors
             var memBmp = Gdi32.CreateCompatibleBitmap(windowDc, width, height);
             var oldMemBmp = Gdi32.SelectObject(memDc, memBmp);
             var result = Gdi32.BitBlt(memDc.DangerousGetHandle(), 0, 0, width, height, windowDc.DangerousGetHandle(), 0, 0,
-                (int) TernaryRasterOperations.SRCCOPY);
+                (int)TernaryRasterOperations.SRCCOPY);
 
             Mat mat = null;
             var bytes = new byte[width * height * 3];
@@ -50,7 +50,7 @@ namespace Dreamland.Core.Vision.Capture.Captors
                     biCompression = BitmapCompressionMode.BI_RGB
                 };
                 bitmapInfo.Init();
-                Gdi32Extension.GetDIBits(memDc.DangerousGetHandle(), memBmp, 0, (uint) height, bytes, ref bitmapInfo, DIB_Color_Mode.DIB_RGB_COLORS);
+                Gdi32Extension.GetDIBits(memDc.DangerousGetHandle(), memBmp, 0, (uint)height, bytes, ref bitmapInfo, DIB_Color_Mode.DIB_RGB_COLORS);
                 mat = new Mat(height, width, MatType.CV_8UC3, bytes);
             }
 
