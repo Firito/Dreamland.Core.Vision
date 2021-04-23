@@ -16,7 +16,7 @@ namespace Dreamland.Core.Vision.Test
         {
             var provider = FeatureMatchFactory.CreateFeatureProvider(featureType);
             Assert.IsNotNull(provider);
-            Assert.AreEqual(featureType, provider.MathFeatureType);
+            Assert.AreEqual(featureType, provider.MatchFeatureType);
         }
     }
 }

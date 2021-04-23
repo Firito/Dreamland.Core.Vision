@@ -22,7 +22,7 @@ namespace Dreamland.Core.Vision.Match
                 return null;
             }
 
-            var type = types.FirstOrDefault(x => GetMathFeatureTypeFromAttribute(x) == featureType);
+            var type = types.FirstOrDefault(x => GetMatchFeatureTypeFromAttribute(x) == featureType);
             if (type == null)
             {
                 return null;
@@ -35,7 +35,7 @@ namespace Dreamland.Core.Vision.Match
         ///     从<see cref="Type"/>中获取<see cref="FeatureMatchType"/>
         /// </summary>
         /// <returns></returns>
-        internal static FeatureMatchType GetMathFeatureTypeFromAttribute(Type type)
+        internal static FeatureMatchType GetMatchFeatureTypeFromAttribute(Type type)
         {
             var attribute = type.GetCustomAttribute(typeof(FeatureProviderTypeAttribute));
             if (!(attribute is FeatureProviderTypeAttribute featureProviderType))

@@ -32,7 +32,17 @@ namespace Dreamland.Core.Vision.Match
 
             //如果没有传入匹配参数，则使用默认参数
             argument ??= new TemplateMatchArgument();
-            return GetMatchResult(searchMat, resultMat, matchModes, argument);
+            var matchResult = GetMatchResult(searchMat, resultMat, matchModes, argument);
+            
+            //如果开启了匹配结果预览，则显示匹配结果
+            if (argument.ExtensionConfig != null &&
+                argument.ExtensionConfig.TryGetValue("PreviewMatchResult", out var isEnabled) && isEnabled is true)
+            {
+                //调试模式下，查看一下当前阶段的匹配结果
+                MatchHelper.PreviewTemplateMatchResult(matchResult, sourceMat);
+            }
+
+            return matchResult;
         }
 
         /// <summary>

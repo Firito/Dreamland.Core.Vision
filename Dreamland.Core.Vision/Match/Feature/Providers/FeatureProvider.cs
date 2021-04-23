@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using OpenCvSharp;
+﻿using OpenCvSharp;
 
 namespace Dreamland.Core.Vision.Match
 {
@@ -10,7 +8,7 @@ namespace Dreamland.Core.Vision.Match
         /// <summary>
         ///     当前 <see cref="IFeatureProvider"/> 所使用的算法类型
         /// </summary>
-        public FeatureMatchType MathFeatureType => GetMathFeatureType();
+        public FeatureMatchType MatchFeatureType => GetMatchFeatureType();
 
         /// <summary>
         ///     进行特征点匹配
@@ -36,10 +34,10 @@ namespace Dreamland.Core.Vision.Match
         ///     获取当前类所使用的<see cref="FeatureMatchType"/>
         /// </summary>
         /// <returns></returns>
-        protected virtual FeatureMatchType GetMathFeatureType()
+        protected virtual FeatureMatchType GetMatchFeatureType()
         {
             var type = GetType();
-            return FeatureMatchFactory.GetMathFeatureTypeFromAttribute(type);
+            return FeatureMatchFactory.GetMatchFeatureTypeFromAttribute(type);
         }
 
         /// <summary>
@@ -50,39 +48,6 @@ namespace Dreamland.Core.Vision.Match
         protected Point2d Point2FToPoint2D(Point2f input)
         {
             return new Point2d(input.X, input.Y);
-        }
-
-        /// <summary>
-        ///     预览匹配结果
-        /// </summary>
-        protected virtual void PreviewMathResult(Mat sourceMat, Mat searchMat, 
-            IEnumerable<KeyPoint> keySourcePoints, IEnumerable<KeyPoint> keySearchPoints,
-            IEnumerable<DMatch> goodMatches)
-        {
-            using var imgMatch = new Mat();
-            Cv2.DrawMatches(sourceMat, keySourcePoints, searchMat, keySearchPoints, goodMatches, imgMatch, flags: DrawMatchesFlags.NotDrawSinglePoints);
-
-            const int maxHeight = 500;
-            if (imgMatch.Height < maxHeight)
-            {
-                ImShow(imgMatch);
-                return;
-            }
-
-            var radio = (double) imgMatch.Width / imgMatch.Height;
-            var resizeWidth = maxHeight * radio;
-            var size = new Size(resizeWidth, maxHeight);
-            using var resizeMat = new Mat(size, imgMatch.Type());
-            Cv2.Resize(imgMatch, resizeMat, size);
-            ImShow(resizeMat);
-
-            void ImShow(Mat img)
-            {
-                var windowName = $"预览窗口{Guid.NewGuid()}";
-                Cv2.ImShow(windowName, img);
-                Cv2.WaitKey(5000);
-                Cv2.DestroyWindow(windowName);
-            }
         }
     }
 }

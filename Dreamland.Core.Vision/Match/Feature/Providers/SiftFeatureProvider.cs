@@ -38,15 +38,18 @@ namespace Dreamland.Core.Vision.Match
             var goodMatches = SelectGoodMatches(matches, argument, sourceKeyPoints, searchKeyPoints);
             Console.WriteLine($"SIFT FeatureMatch points count : {goodMatches.Count}");
 
-            if (Debugger.IsAttached && argument.ExtensionConfig != null &&
-                argument.ExtensionConfig.TryGetValue("DebugPreview", out var isEnabled) && isEnabled is true)
+            //获取匹配结果
+            var matchResult = GetMatchResult(goodMatches, sourceKeyPoints, searchKeyPoints);
+
+            //如果开启了匹配结果预览，则显示匹配结果
+            if (argument.ExtensionConfig != null &&
+                argument.ExtensionConfig.TryGetValue("PreviewMatchResult", out var isEnabled) && isEnabled is true)
             {
                 //调试模式下，查看一下当前阶段的匹配结果
-                PreviewMathResult(sourceMat, searchMat, sourceKeyPoints, searchKeyPoints, goodMatches);
+                MatchHelper.PreviewFeatureMatchResult(matchResult, sourceMat, searchMat, sourceKeyPoints, searchKeyPoints, goodMatches);
             }
 
-            //获取匹配结果
-            return GetMatchResult(goodMatches, sourceKeyPoints, searchKeyPoints);
+            return matchResult;
         }
 
         /// <summary>

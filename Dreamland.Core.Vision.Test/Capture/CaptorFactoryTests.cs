@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Dreamland.Core.Vision.Capture;
+﻿using Dreamland.Core.Vision.Capture;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenCvSharp;
 
@@ -14,11 +13,9 @@ namespace Dreamland.Core.Vision.Test
             var captor = CaptorFactory.GetCaptor();
             using var data = captor.CaptureScreen();
             Assert.IsNotNull(data);
-            if (Debugger.IsAttached)
-            {
-                Cv2.ImShow("捕获内容", data);
-                Cv2.WaitKey(5000);
-            }
+            Cv2.ImShow("捕获内容", data);
+            Cv2.WaitKey(2000);
+            Cv2.DestroyAllWindows();
         }
     }
 }

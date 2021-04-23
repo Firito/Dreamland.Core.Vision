@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using Dreamland.Core.Vision.Match;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpenCvSharp;
 
 namespace Dreamland.Core.Vision.Test
 {
@@ -30,21 +28,13 @@ namespace Dreamland.Core.Vision.Test
             var matchResult = CvMatch.TemplateMatch(sourceImage, testImage1, type, new TemplateMatchArgument()
             {
                 MaxCount = maxCount,
-                Threshold = threshold
+                Threshold = threshold,
+                ExtensionConfig = new Dictionary<string, object>()
+                {
+                    {"PreviewMatchResult", true }
+                }
             });
             Assert.IsTrue(matchResult.Success && matchResult.MatchItems.Any());
-            
-#if DEBUG
-            using var sourceMat = new Mat(sourceImage);
-            if (Debugger.IsAttached)
-            {
-                foreach (var matchItem in matchResult.MatchItems)
-                {
-                    var rectangle = matchItem.Rectangle;
-                    Cv2.Rectangle(sourceMat, new OpenCvSharp.Point(rectangle.X, rectangle.Y), new OpenCvSharp.Point(rectangle.Right, rectangle.Bottom), Scalar.RandomColor());
-                }
-            }
-#endif
 
             //Bitmap≤‚ ‘
             using var sourceBitmap = new Bitmap(sourceImage);
@@ -52,23 +42,13 @@ namespace Dreamland.Core.Vision.Test
             matchResult = CvMatch.TemplateMatch(sourceBitmap, testBitmap1, type, new TemplateMatchArgument()
             {
                 MaxCount = maxCount,
-                Threshold = threshold
+                Threshold = threshold,
+                ExtensionConfig = new Dictionary<string, object>()
+                {
+                    {"PreviewMatchResult", true }
+                }
             });
             Assert.IsTrue(matchResult.Success && matchResult.MatchItems.Any());
-
-#if DEBUG
-            if (Debugger.IsAttached)
-            {
-                foreach (var matchItem in matchResult.MatchItems)
-                {
-                    var rectangle = matchItem.Rectangle;
-                    Cv2.Rectangle(sourceMat, new OpenCvSharp.Point(rectangle.X, rectangle.Y), new OpenCvSharp.Point(rectangle.Right, rectangle.Bottom), Scalar.RandomColor());
-                }
-                Cv2.ImShow("ƒ£∞Ê∆•≈‰≤‚ ‘", sourceMat);
-                Cv2.WaitKey(5000);
-                Cv2.DestroyAllWindows();
-            }
-#endif
         }
 
         
@@ -89,22 +69,10 @@ namespace Dreamland.Core.Vision.Test
                 RansacThreshold = (uint)threshold,
                 ExtensionConfig = new Dictionary<string, object>()
                 {
-                    {"DebugPreview", true }
+                    {"PreviewMatchResult", true }
                 }
             });
             Assert.IsTrue(matchResult.Success && matchResult.MatchItems.Any());
-            
-#if DEBUG
-            using var sourceMat = new Mat(sourceImage);
-            if (Debugger.IsAttached)
-            {
-                foreach (var matchItem in matchResult.MatchItems)
-                {
-                    var rectangle = matchItem.Rectangle;
-                    Cv2.Rectangle(sourceMat, new OpenCvSharp.Point(rectangle.X, rectangle.Y), new OpenCvSharp.Point(rectangle.Right, rectangle.Bottom), Scalar.RandomColor(), 3);
-                }
-            }
-#endif
 
             //Bitmap≤‚ ‘
             using var sourceBitmap = new Bitmap(sourceImage);
@@ -112,23 +80,13 @@ namespace Dreamland.Core.Vision.Test
             matchResult = CvMatch.FeatureMatch(sourceImage, testImage1, type, new FeatureMatchArgument()
             {
                 Ratio = ratio,
-                RansacThreshold = (uint)threshold
+                RansacThreshold = (uint)threshold,
+                ExtensionConfig = new Dictionary<string, object>()
+                {
+                    {"PreviewMatchResult", true }
+                }
             });
             Assert.IsTrue(matchResult.Success && matchResult.MatchItems.Any());
-
-#if DEBUG
-            if (Debugger.IsAttached)
-            {
-                foreach (var matchItem in matchResult.MatchItems)
-                {
-                    var rectangle = matchItem.Rectangle;
-                    Cv2.Rectangle(sourceMat, new OpenCvSharp.Point(rectangle.X, rectangle.Y), new OpenCvSharp.Point(rectangle.Right, rectangle.Bottom), Scalar.RandomColor(), 3);
-                }
-                Cv2.ImShow("ƒ£∞Ê∆•≈‰≤‚ ‘", sourceMat);
-                Cv2.WaitKey(5000);
-                Cv2.DestroyAllWindows();
-            }
-#endif
         }
     }
 }
