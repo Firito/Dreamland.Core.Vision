@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using OpenCvSharp;
 using OpenCvSharp.Features2D;
@@ -38,11 +37,9 @@ namespace Dreamland.Core.Vision.Match
             var goodMatches = SelectGoodMatches(matches, argument, sourceKeyPoints, searchKeyPoints);
             Console.WriteLine($"SIFT FeatureMatch points count : {goodMatches.Count}");
 
-            if (Debugger.IsAttached)
-            {
-                //调试模式下，查看一下当前阶段的匹配结果
+#if DEBUG_UI //调试模式下，查看一下当前阶段的匹配结果
                 PreviewMathResult(sourceMat, searchMat, sourceKeyPoints, searchKeyPoints, goodMatches);
-            }
+#endif
 
             //获取匹配结果
             return GetMatchResult(goodMatches, sourceKeyPoints, searchKeyPoints);
