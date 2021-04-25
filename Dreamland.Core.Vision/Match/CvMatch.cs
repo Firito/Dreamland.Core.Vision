@@ -82,6 +82,16 @@ namespace Dreamland.Core.Vision.Match
         /// <returns></returns>
         public static TemplateMatchResult TemplateMatch(Mat sourceImage, Mat searchImage, TemplateMatchType type = TemplateMatchType.CCOEFF_NORMED, TemplateMatchArgument argument = null)
         {
+            if (searchImage.Empty())
+            {
+                throw new ArgumentOutOfRangeException(nameof(searchImage), "不允许使用空的查询（原始）图像进行识别");
+            }
+
+            if (sourceImage.Empty())
+            {
+                throw new ArgumentOutOfRangeException(nameof(searchImage), "不允许使用空的查询（原始）图像进行识别");
+            }
+
             if (sourceImage.Type() == searchImage.Type())
                 return Match.TemplateMatch.Match(sourceImage, searchImage, type, argument);
 
@@ -165,6 +175,16 @@ namespace Dreamland.Core.Vision.Match
         public static FeatureMatchResult FeatureMatch(Mat sourceImage, Mat searchImage,
             FeatureMatchType featureMatchType = FeatureMatchType.Sift, FeatureMatchArgument argument = null)
         {
+            if (searchImage.Empty())
+            {
+                throw new ArgumentOutOfRangeException(nameof(searchImage), "不允许使用空的查询（原始）图像进行识别");
+            }
+
+            if (sourceImage.Empty())
+            {
+                throw new ArgumentOutOfRangeException(nameof(searchImage), "不允许使用空的查询（原始）图像进行识别");
+            }
+
             if (sourceImage.Type() == searchImage.Type())
                 return argument == null
                     ? Match.FeatureMatch.Match(sourceImage, searchImage, featureMatchType)
