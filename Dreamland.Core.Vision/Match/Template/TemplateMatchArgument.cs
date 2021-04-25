@@ -26,7 +26,7 @@ namespace Dreamland.Core.Vision.Match
         ///     拓展配置
         /// <para>提供一些额外配置</para>
         /// </summary>
-        /// <value>DebugPreview:true 在DEBUG模式下，开启匹配结果的预览</value>
-        public Dictionary<string, object> ExtensionConfig { get; set; }
+        /// <value>PreviewMatchResult:true 在DEBUG模式下，开启匹配结果的预览</value>
+        public Dictionary<string, object> ExtensionConfig { get; set; } = new Dictionary<string, object>();
     }
 }
