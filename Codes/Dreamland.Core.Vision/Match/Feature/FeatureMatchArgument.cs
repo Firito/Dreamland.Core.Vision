@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace Dreamland.Core.Vision.Match
+﻿namespace Dreamland.Core.Vision.Match
 {
     /// <summary>
     ///     特征点匹配参数
     /// </summary>
-    public class FeatureMatchArgument
+    public class FeatureMatchArgument : MatchArgument
     {
         /// <summary>
         ///     比例阈值
@@ -24,12 +22,5 @@ namespace Dreamland.Core.Vision.Match
         /// <para>值越小，表示所允许的误差越小。</para>
         /// </summary>
         public uint RansacThreshold { get; set; } = 3;
-
-        /// <summary>
-        ///     拓展配置
-        /// <para>提供一些额外配置</para>
-        /// </summary>
-        /// <value>PreviewMatchResult:true 在DEBUG模式下，开启匹配结果的预览</value>
-        public Dictionary<string, object> ExtensionConfig { get; set; } = new Dictionary<string, object>();
     }
 }
