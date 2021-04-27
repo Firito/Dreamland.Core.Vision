@@ -38,22 +38,20 @@ namespace Dreamland.Core.Vision.Match
             bfMatcher.Train();
             //获得匹配特征点，并提取最优配对
             var matches = bfMatcher.KnnMatch(sourceDescriptors, searchDescriptors, (int)argument.MatchPoints);
+            argument.OutputDebugMessage($"[FeatureMatch] [SIFT] The number of matching points is ({matches.Length}).");
 
             //即使使用SIFT算法，但此时没有经过点筛选的匹配效果同样糟糕，所进一步获取优秀匹配点
             var goodMatches = SelectGoodMatches(matches, argument, sourceKeyPoints, searchKeyPoints);
-            Console.WriteLine($"SIFT FeatureMatch points count : {goodMatches.Count}");
 
             //获取匹配结果
             var matchResult = GetMatchResult(goodMatches, sourceKeyPoints, searchKeyPoints);
-
-            //如果开启了匹配结果预览，则显示匹配结果
-            if (argument.ExtensionConfig != null &&
-                argument.ExtensionConfig.TryGetValue("PreviewMatchResult", out var isEnabled) && isEnabled is true)
+            argument.OutputDebugMessage($"[FeatureMatch] [SIFT] The result of the match is ({matchResult.Success}) ({matchResult.MatchItems.Count}).");
+            if (matchResult.Success)
             {
-                //调试模式下，查看一下当前阶段的匹配结果
-                MatchHelper.PreviewFeatureMatchResult(matchResult, sourceMat, searchMat, sourceKeyPoints, searchKeyPoints, goodMatches);
+                var bestMatch = matchResult.MatchItems[0];
+                argument.OutputDebugMessage($"[FeatureMatch] [SIFT] The center point of the best match is ({bestMatch.Point}), and the rect is {bestMatch.Rectangle}.");
             }
-
+            argument.PreviewDebugFeatureMatchResult(matchResult, sourceMat, searchMat, sourceKeyPoints, searchKeyPoints, goodMatches);
             return matchResult;
         }
 
@@ -95,13 +93,13 @@ namespace Dreamland.Core.Vision.Match
                 sourcePoints.Add(Point2FToPoint2D(sourceKeyPoints[goodMatch.QueryIdx].Pt));
                 searchPoints.Add(Point2FToPoint2D(searchKeyPoints[goodMatch.TrainIdx].Pt));
             }
+            argument.OutputDebugMessage($"[FeatureMatch] [SIFT] The number of good matching points is ({goodMatches.Count}).");
 
             //随机抽样一致(RANSAC)算法 (如果原始的匹配结果为空, 则跳过过滤步骤）
             if (sourcePoints.Count >= MinCorrespondingPointCount && searchPoints.Count >= MinCorrespondingPointCount)
             {
                 var inliersMask = new Mat();
-                Cv2.FindHomography(sourcePoints, searchPoints, HomographyMethods.Ransac, argument.RansacThreshold,
-                    mask: inliersMask);
+                Cv2.FindHomography(sourcePoints, searchPoints, HomographyMethods.Ransac, argument.RansacThreshold, inliersMask);
                 // 如果通过RANSAC处理后的匹配点大于10个,才应用过滤. 否则使用原始的匹配点结果(匹配点过少的时候通过RANSAC处理后,可能会得到0个匹配点的结果).
                 if (inliersMask.Rows > 10)
                 {
@@ -115,11 +113,11 @@ namespace Dreamland.Core.Vision.Match
                             inliers.Add(goodMatches[i]);
                         }
                     }
-
+                    
+                    argument.OutputDebugMessage($"[FeatureMatch] [SIFT] The number of good matching RANSAC points is ({inliers.Count}).");
                     return inliers;
                 }
             }
-
             return goodMatches;
         }
 

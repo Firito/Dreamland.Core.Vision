@@ -33,15 +33,13 @@ namespace Dreamland.Core.Vision.Match
             //如果没有传入匹配参数，则使用默认参数
             argument ??= new TemplateMatchArgument();
             var matchResult = GetMatchResult(searchMat, resultMat, matchModes, argument);
-
-            //如果开启了匹配结果预览，则显示匹配结果
-            if (argument.ExtensionConfig != null &&
-                argument.ExtensionConfig.TryGetValue("PreviewMatchResult", out var isEnabled) && isEnabled is true)
+            argument.OutputDebugMessage($"[TemplateMatch] [{type}] The result of the match is ({matchResult.Success}) ({matchResult.MatchItems.Count}).");
+            if (matchResult.Success)
             {
-                //调试模式下，查看一下当前阶段的匹配结果
-                MatchHelper.PreviewTemplateMatchResult(matchResult, sourceMat);
+                var bestMatch = matchResult.MatchItems[0];
+                argument.OutputDebugMessage($"[TemplateMatch] [{type}] The center point of the best match is ({bestMatch.Point}), and the rect is {bestMatch.Rectangle}.");
             }
-
+            argument.PreviewDebugTemplateMatchResult(matchResult, sourceMat);
             return matchResult;
         }
 
@@ -74,13 +72,13 @@ namespace Dreamland.Core.Vision.Match
                     value = maxValue;
                     topLeft = maxLocation;
                 }
-
-                Console.WriteLine($"TemplateMatch Value({threshold:F}) = {value:F}");
+                
                 if (maxValue < threshold)
                 {
                     break;
                 }
-
+                
+                argument.OutputDebugMessage($"[TemplateMatch] The info of the match is ([{matchModes}][{threshold:F}][{matchResult.MatchItems.Count}]) = {value:F}.");
                 var matchItem = new TemplateMatchResultItem()
                 {
                     Value = value

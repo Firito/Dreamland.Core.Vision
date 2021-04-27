@@ -1,23 +1,28 @@
 ﻿using OpenCvSharp;
 using System;
 using System.Collections.Generic;
-using Range = OpenCvSharp.Range;
 
 namespace Dreamland.Core.Vision.Match
 {
     /// <summary>
-    ///     匹配帮助类
+    ///     提供对匹配进行调试的相关拓展方法
     /// </summary>
-    internal static class MatchHelper
+    internal static class MatchDebugExtension
     {
         /// <summary>
-        ///     预览模版匹配结果
+        ///     预览模版匹配结果（仅在开启了<see cref="MatchArgument.PreviewMatchResult"/>配置时）
         /// </summary>
+        /// <param name="argument"></param>
         /// <param name="matchResult"></param>
         /// <param name="sourceImage"></param>
-        internal static void PreviewTemplateMatchResult(TemplateMatchResult matchResult, Mat sourceImage)
+        internal static void PreviewDebugTemplateMatchResult(this MatchArgument argument, TemplateMatchResult matchResult, Mat sourceImage)
         {
-            using var image = new Mat(sourceImage, Range.All);
+            if (!argument.IsExtensionConfigEnabled(MatchArgument.PreviewMatchResult))
+            {
+                return;
+            }
+
+            using var image = new Mat(sourceImage, OpenCvSharp.Range.All);
             if (matchResult.Success)
             {
                 foreach (var matchItem in matchResult.MatchItems)
@@ -30,13 +35,25 @@ namespace Dreamland.Core.Vision.Match
         }
 
         /// <summary>
-        ///     预览匹配结果
+        ///     预览匹配结果（仅在开启了<see cref="MatchArgument.PreviewMatchResult"/>配置时）
         /// </summary>
-        internal static void PreviewFeatureMatchResult(FeatureMatchResult matchResult, Mat sourceMat, Mat searchMat,
+        /// <param name="argument"></param>
+        /// <param name="matchResult"></param>
+        /// <param name="sourceMat"></param>
+        /// <param name="searchMat"></param>
+        /// <param name="keySourcePoints"></param>
+        /// <param name="keySearchPoints"></param>
+        /// <param name="goodMatches"></param>
+        internal static void PreviewDebugFeatureMatchResult(this MatchArgument argument, FeatureMatchResult matchResult, Mat sourceMat, Mat searchMat,
             IEnumerable<KeyPoint> keySourcePoints, IEnumerable<KeyPoint> keySearchPoints,
             IEnumerable<DMatch> goodMatches)
         {
-            using var image = new Mat(sourceMat, Range.All);
+            if (!argument.IsExtensionConfigEnabled(MatchArgument.PreviewMatchResult))
+            {
+                return;
+            }
+
+            using var image = new Mat(sourceMat, OpenCvSharp.Range.All);
             if (matchResult.Success)
             {
                 foreach (var matchItem in matchResult.MatchItems)
@@ -49,6 +66,19 @@ namespace Dreamland.Core.Vision.Match
             using var imgMatch = new Mat();
             Cv2.DrawMatches(image, keySourcePoints, searchMat, keySearchPoints, goodMatches, imgMatch, flags: DrawMatchesFlags.NotDrawSinglePoints);
             PreviewMatchResultImage(imgMatch);
+        }
+
+        /// <summary>
+        ///     输出调试信息（仅在开启了<see cref="MatchArgument.ConsoleOutput"/>配置时）
+        /// </summary>
+        /// <param name="argument"></param>
+        /// <param name="message"></param>
+        internal static void OutputDebugMessage(this MatchArgument argument, string message)
+        {
+            if (argument.IsExtensionConfigEnabled(MatchArgument.ConsoleOutput))
+            {
+                Console.WriteLine("[ConsoleOutput] " + message);
+            }
         }
 
         /// <summary>

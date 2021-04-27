@@ -17,7 +17,6 @@ namespace Dreamland.Core.Vision.Test
         [DataTestMethod]
         [DataRow((double)0.3, (uint)10, TemplateMatchType.SQDIFF_NORMED)]
         [DataRow((double)0.8, (uint)10, TemplateMatchType.CCORR_NORMED)]
-        [DataRow((double)0.8, (uint)10, TemplateMatchType.CCOEFF_NORMED)]
         public void TemplateMatchTest(double threshold, uint maxCount, TemplateMatchType type)
         {
             var imageFolder = Path.GetFullPath(@".\_TestResources\CvMatchTest");
@@ -31,7 +30,8 @@ namespace Dreamland.Core.Vision.Test
                 Threshold = threshold,
                 ExtensionConfig = new Dictionary<string, object>()
                 {
-                    {"PreviewMatchResult", true }
+                    {MatchArgument.ConsoleOutput, true },
+                    {MatchArgument.PreviewMatchResult, true }
                 }
             });
             Assert.IsTrue(matchResult.Success && matchResult.MatchItems.Any());
@@ -45,7 +45,8 @@ namespace Dreamland.Core.Vision.Test
                 Threshold = threshold,
                 ExtensionConfig = new Dictionary<string, object>()
                 {
-                    {"PreviewMatchResult", true }
+                    {MatchArgument.ConsoleOutput, true },
+                    {MatchArgument.PreviewMatchResult, true }
                 }
             });
             Assert.IsTrue(matchResult.Success && matchResult.MatchItems.Any());
@@ -69,7 +70,8 @@ namespace Dreamland.Core.Vision.Test
                 RansacThreshold = (uint)threshold,
                 ExtensionConfig = new Dictionary<string, object>()
                 {
-                    {"PreviewMatchResult", true }
+                    {MatchArgument.ConsoleOutput, true },
+                    {MatchArgument.PreviewMatchResult, true }
                 }
             });
             Assert.IsTrue(matchResult.Success && matchResult.MatchItems.Any());
@@ -83,7 +85,8 @@ namespace Dreamland.Core.Vision.Test
                 RansacThreshold = (uint)threshold,
                 ExtensionConfig = new Dictionary<string, object>()
                 {
-                    {"PreviewMatchResult", true }
+                    {MatchArgument.ConsoleOutput, true },
+                    {MatchArgument.PreviewMatchResult, true }
                 }
             });
             Assert.IsTrue(matchResult.Success && matchResult.MatchItems.Any());
