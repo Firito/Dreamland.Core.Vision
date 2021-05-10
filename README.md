@@ -20,6 +20,34 @@
     using Mat data = captor.CaptureWindow(hWnd);
 ```
 
+#### 注意事项
+
+在非100%DPI，因为DPI感知的问题，会导致截图大小错误；
+
+方法一、[推荐] 使用application (.exe) manifest
+
+添加 app.manifest 文件，并找到DPI感知配置，并取消注释
+
+``` xml
+  <!-- 指示该应用程序可以感知 DPI 且 Windows 在 DPI 较高时将不会对其进行
+       自动缩放。Windows Presentation Foundation (WPF)应用程序自动感知 DPI，无需
+       选择加入。选择加入此设置的 Windows 窗体应用程序(目标设定为 .NET Framework 4.6 )还应
+       在其 app.config 中将 "EnableWindowsFormsHighDpiAutoResizing" 设置设置为 "true"。-->
+  
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+      <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true</dpiAware>
+    </windowsSettings>
+  </application>
+```
+
+方法二、调用SetProcessDPIAware()
+
+``` C#
+    //使用静态方法，改变程序DPI感知
+    User32.SetProcessDPIAware();
+```
+
 ### 图像匹配(定位)
 
 #### 模版匹配
