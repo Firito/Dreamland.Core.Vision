@@ -4,7 +4,6 @@
 	<OutputType>Library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-	<ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
