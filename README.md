@@ -48,6 +48,29 @@
     User32.SetProcessDPIAware();
 ```
 
+### 图像相似度
+
+#### 使用哈希算法(图片像素灰度值)计算图片相似度
+
+使用范例：
+
+``` C#
+    // 传入两张图片，返回一个相似度（similarity），表示两张图片的相似性（0-1），值越大表示越相似
+    var similarity = ImageComparison.CompareSimilarity(@"image1", @"image2");
+```
+
+#### 使用欧氏距离(像素比较)计算图片相似度
+
+使用范例：
+
+``` C#
+    // 传入两张图片，返回一个相似度（similarity），表示两张图片的相似性（0-1），值越大表示越相似
+    var similarity = ImageComparison.CompareSimilarity(@"image1", @"image2", new ComparisonArgument()
+            {
+                Type = ComparisonSimilarityType.EUCLIDEAN_DISTANCE
+            });
+```
+
 ### 图像匹配(定位)
 
 #### 模版匹配
@@ -59,7 +82,7 @@
 ``` C#
     /// 传入两张图片，
     /// <param name="sourceImage">对应的查询（原始）图像</param>
-    /// <param name="searchImage">对应的训练（模板）图像（宽高不得超过被查询图像）</param>
+    /// <param name="searchImage">对应的训练（模板）图像（宽高不得超过被查询（原始）图像）</param>
     var matchResult = CvMatch.TemplateMatch(@"sourceImage", @"searchImage");
     if(matchResult.Success)
     {
