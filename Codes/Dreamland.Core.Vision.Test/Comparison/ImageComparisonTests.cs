@@ -18,5 +18,19 @@ namespace Dreamland.Core.Vision.Test
             var similarity = ImageComparison.CompareSimilarity(image1, image2);
             Assert.IsTrue(similarity > 0.8);
         }
+
+        [TestMethod()]
+        [DataRow("imxcg_11.png", "imxcg_22.png")]
+        public void CompareSimilaritiesTest2(string imageName1, string imageName2)
+        {
+            var imageFolder = Path.GetFullPath(@".\_TestResources\ComparisonTest");
+            var image1 = Path.Combine(imageFolder, imageName1);
+            var image2 = Path.Combine(imageFolder, imageName2);
+            var similarity = ImageComparison.CompareSimilarity(image1, image2, new ComparisonArgument()
+            {
+                Type = ComparisonSimilarityType.EUCLIDEAN_DISTANCE
+            });
+            Assert.IsTrue(similarity > 0.8);
+        }
     }
 }

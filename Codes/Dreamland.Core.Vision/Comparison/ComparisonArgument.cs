@@ -8,7 +8,7 @@ namespace Dreamland.Core.Vision.Comparison
     public class ComparisonArgument : MatchArgument
     {
         /// <summary>
-        ///     相似度匹配的阈值
+        ///     相似度匹配的阈值（0-1），值越大误差越大
         /// </summary>
         public double Threshold { get; set; } = 0.5;
 
