@@ -15,6 +15,6 @@ namespace Dreamland.Core.Vision.Comparison
         /// <summary>
         ///     相似度匹配的算法
         /// </summary>
-        public ComparisonSimilarityType Type { get; set; } = ComparisonSimilarityType.HASH_GRAY;
+        public ComparisonSimilarityType Type { get; set; } = ComparisonSimilarityType.HASH_BRIGHTNESS;
     }
 }

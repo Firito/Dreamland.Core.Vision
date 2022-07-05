@@ -32,6 +32,8 @@ namespace Dreamland.Core.Vision.Comparison
         {
             switch (argument.Type)
             {
+                case ComparisonSimilarityType.HASH_BRIGHTNESS:
+                    return CompareHashBrightness(image1, image2, argument.Threshold);
                 case ComparisonSimilarityType.HASH_GRAY:
                     return CompareHashGray(image1, image2, argument.Threshold);
                 case ComparisonSimilarityType.EUCLIDEAN_DISTANCE:
@@ -39,6 +41,31 @@ namespace Dreamland.Core.Vision.Comparison
                 default:
                     return 0;
             }
+        }
+
+        /// <summary>
+        /// 比较图像哈希(亮度值)
+        /// </summary>
+        /// <param name="image1"></param>
+        /// <param name="image2"></param>
+        /// <param name="threshold"></param>
+        /// <returns></returns>
+        private static double CompareHashBrightness(string image1, string image2, double threshold)
+        {
+            const int sizeValue = 16;
+            using var bitmap1 = new Bitmap(image1);
+            using var bitmap2 = new Bitmap(image2);
+            var colors1 = GetColors(bitmap1, new Size(sizeValue, sizeValue));
+            var colors2 = GetColors(bitmap2, new Size(sizeValue, sizeValue));
+            var equalElements = colors1.Zip(colors2, (i, j) =>
+            {
+                threshold *= byte.MaxValue;
+                var brightness1 = i.GetBrightness();
+                var brightness2 = j.GetBrightness();
+                return (brightness1 < threshold && brightness2 < threshold) || (brightness1 > threshold && brightness2 > threshold);
+            }).Count(eq => eq);
+            var percentage = equalElements / Math.Pow(sizeValue, 2);
+            return Math.Round(percentage, 2);
         }
 
         /// <summary>
@@ -50,12 +77,12 @@ namespace Dreamland.Core.Vision.Comparison
         /// <returns></returns>
         private static double CompareHashGray(string image1, string image2, double threshold)
         {
-            const int sizeValue = 16;
+            const int sizeValue = 32;
             using var bitmap1 = new Bitmap(image1);
             using var bitmap2 = new Bitmap(image2);
             var colors1 = GetColors(bitmap1, new Size(sizeValue, sizeValue));
             var colors2 = GetColors(bitmap2, new Size(sizeValue, sizeValue));
-            var equalElements = colors1.Zip(colors2, (i, j) => Math.Abs(GetGray(i) - GetGray(j)) < threshold * byte.MaxValue).Count(eq => eq);
+            var equalElements = colors1.Zip(colors2, (i, j) => Math.Abs(GetGray(i) - GetGray(j)) < threshold * 64).Count(eq => eq);
             var percentage = equalElements / Math.Pow(sizeValue, 2);
             return Math.Round(percentage, 2);
         }
@@ -78,7 +105,7 @@ namespace Dreamland.Core.Vision.Comparison
 
             var colors1 = GetColors(bitmap1, size);
             var colors2 = GetColors(bitmap2, size);
-            var equalElements = colors1.Zip(colors2, (i, j) => GetEuclideanDistance(i, j) < threshold * byte.MaxValue).Count(eq => eq);
+            var equalElements = colors1.Zip(colors2, (i, j) => GetEuclideanDistance(i, j) < threshold * 16).Count(eq => eq);
             var percentage = equalElements / (double)(size.Width * size.Height);
             return Math.Round(percentage, 2);
         }
@@ -127,10 +154,7 @@ namespace Dreamland.Core.Vision.Comparison
             var g = Math.Pow(x.G - y.G, 2);
             var b = Math.Pow(x.B - y.B, 2);
 
-            var difference = Math.Sqrt((2 + m / 256) * r + 4 * g + (2 + (255 - m) / 256) * b);
-
-            //针对接近白色和黑色的区域，优化计算
-            return m >= 240 || m <= 20 ? difference * 0.1 : difference;
+            return Math.Sqrt((2 + m / 256) * r + 4 * g + (2 + (255 - m) / 256) * b);
         }
     }
 }
