@@ -8,13 +8,13 @@ namespace Dreamland.Core.Vision.Comparison
     public class ComparisonArgument : MatchArgument
     {
         /// <summary>
-        ///     相似度匹配的阈值（0-1），值越大误差越大
+        ///     相似度匹配的阈值, 时取值为（0-1），值越大误差越大
         /// </summary>
-        public double Threshold { get; set; } = 0.5;
+        public double Threshold { get; set; } = 1;
 
         /// <summary>
         ///     相似度匹配的算法
         /// </summary>
-        public ComparisonSimilarityType Type { get; set; } = ComparisonSimilarityType.HASH_BRIGHTNESS;
+        public ComparisonSimilarityType Type { get; set; } = ComparisonSimilarityType.PIXEL_CONTRAST;
     }
 }

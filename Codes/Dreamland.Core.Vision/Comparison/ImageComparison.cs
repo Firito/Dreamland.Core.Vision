@@ -32,10 +32,10 @@ namespace Dreamland.Core.Vision.Comparison
         {
             switch (argument.Type)
             {
-                case ComparisonSimilarityType.HASH_BRIGHTNESS:
-                    return CompareHashBrightness(image1, image2, argument.Threshold);
                 case ComparisonSimilarityType.HASH_GRAY:
                     return CompareHashGray(image1, image2, argument.Threshold);
+                case ComparisonSimilarityType.PIXEL_CONTRAST:
+                    return ComparePixelContrast(image1, image2, argument.Threshold);
                 case ComparisonSimilarityType.EUCLIDEAN_DISTANCE:
                     return CompareEuclideanDistance(image1, image2, argument.Threshold);
                 default:
@@ -44,30 +44,30 @@ namespace Dreamland.Core.Vision.Comparison
         }
 
         /// <summary>
-        /// 比较图像哈希(亮度值)
+        /// 比较图像像素
         /// </summary>
         /// <param name="image1"></param>
         /// <param name="image2"></param>
         /// <param name="threshold"></param>
         /// <returns></returns>
-        private static double CompareHashBrightness(string image1, string image2, double threshold)
+        /// <exception cref="NotImplementedException"></exception>
+        private static double ComparePixelContrast(string image1, string image2, double threshold)
         {
-            const int sizeValue = 16;
+            const int sizeValue = 256;
             using var bitmap1 = new Bitmap(image1);
             using var bitmap2 = new Bitmap(image2);
             var colors1 = GetColors(bitmap1, new Size(sizeValue, sizeValue));
             var colors2 = GetColors(bitmap2, new Size(sizeValue, sizeValue));
-            var equalElements = colors1.Zip(colors2, (i, j) =>
-            {
-                threshold *= byte.MaxValue;
-                var brightness1 = i.GetBrightness();
-                var brightness2 = j.GetBrightness();
-                return (brightness1 < threshold && brightness2 < threshold) || (brightness1 > threshold && brightness2 > threshold);
-            }).Count(eq => eq);
+            var thresholdScale = 32 * threshold;
+            var equalElements = colors1.Zip(colors2,
+                (i, j) => Math.Abs(i.A - j.A) < thresholdScale
+                                    && Math.Abs(i.R - j.R) < thresholdScale
+                                    && Math.Abs(i.G - j.G) < thresholdScale
+                                    && Math.Abs(i.B - j.B) < thresholdScale).Count(eq => eq);
             var percentage = equalElements / Math.Pow(sizeValue, 2);
-            return Math.Round(percentage, 2);
+            return Math.Round(percentage, 4, MidpointRounding.ToZero);
         }
-
+        
         /// <summary>
         /// 比较图像哈希(灰度值)
         /// </summary>
@@ -82,9 +82,16 @@ namespace Dreamland.Core.Vision.Comparison
             using var bitmap2 = new Bitmap(image2);
             var colors1 = GetColors(bitmap1, new Size(sizeValue, sizeValue));
             var colors2 = GetColors(bitmap2, new Size(sizeValue, sizeValue));
-            var equalElements = colors1.Zip(colors2, (i, j) => Math.Abs(GetGray(i) - GetGray(j)) < threshold * 64).Count(eq => eq);
+            var thresholdScale = 32 * threshold;
+            var equalElements = colors1.Zip(colors2, (i, j) =>
+            {
+                //灰度图二值化处理
+                var gray1 = GetGray(i);
+                var gray2 = GetGray(j);
+                return Math.Abs(gray1 - gray2) <= thresholdScale;
+            }).Count(eq => eq);
             var percentage = equalElements / Math.Pow(sizeValue, 2);
-            return Math.Round(percentage, 2);
+            return Math.Round(percentage, 4, MidpointRounding.ToZero);
         }
 
         /// <summary>
@@ -105,9 +112,11 @@ namespace Dreamland.Core.Vision.Comparison
 
             var colors1 = GetColors(bitmap1, size);
             var colors2 = GetColors(bitmap2, size);
-            var equalElements = colors1.Zip(colors2, (i, j) => GetEuclideanDistance(i, j) < threshold * 16).Count(eq => eq);
+
+            var thresholdScale = 32 * threshold;
+            var equalElements = colors1.Zip(colors2, (i, j) => GetEuclideanDistance(i, j) < thresholdScale).Count(eq => eq);
             var percentage = equalElements / (double)(size.Width * size.Height);
-            return Math.Round(percentage, 2);
+            return Math.Round(percentage, 4, MidpointRounding.ToZero);
         }
 
         /// <summary>
